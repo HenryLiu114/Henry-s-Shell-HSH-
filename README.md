@@ -1,2 +1,2 @@
 # Henry-s-Shell-HSH-
-A java based shell created by your truly
+A open source java based shell created by your truly
