@@ -1,0 +1,149 @@
+Command List
+EVERY COMMAND MUST START WITH A SLASH "/"
+
+/****************************************************************/
+/       Help                                                     /
+/****************************************************************/
+
+/help 
+Prompts to go to ReadMe
+
+/?
+Prompts to go to ReadMe
+
+
+/****************************************************************/
+/       File                                                     /
+/****************************************************************/
+
+/allocate <fileName> 
+Creates new temporary data file
+
+/free <fileName>
+Remove the new temporary data file
+
+/load <fileName> 
+Loads a data file from storage
+
+/store <fileName>
+Saves a temporary data file to storage
+
+/delete <fileName>
+Deletes a data file
+
+/lallo
+Lists all allocations
+
+/lstore
+Lists all files in storage
+
+/callo <fileName>
+Switch the current allocation
+
+
+/****************************************************************/
+/       Variables                                                /
+/****************************************************************/
+
+/var <varname> <initialize>
+Creates a new variable (TYPE IS INFERRED)
+ex: 1 is considered a integer
+    1.0 is considered a double
+    1a is considered a string
+
+/lvar
+Lists all the variables in the allocation
+
+/svar <varname> <setTo>
+Sets a variable to a specified value
+
+/rvar <varname>
+Removes a variable
+
+/intram 
+Returns the hashmap of the integers
+
+/floatram
+Returns the hashmap of the doubles
+
+/strram
+Returns the hashmap of the Strings
+
+
+/****************************************************************/
+/       Arithmetic                                               /
+/****************************************************************/
+
+NOTE: Doing any Arithmetic with doubles and integer types ALWAYS
+      results in doubles
+
+/add <x> <y>
+x + y
+
+/sub <x> <y>
+x - y
+
+/mul <x> <y>
+x * y
+
+/div <x> <y>
+x/y
+
+/mod <x> <y>
+Only works with integers
+Finds the reminder x/y
+
+/pow <x> <y>
+x^y
+
+/root <x> <y>
+yth root of x
+
+/rand <lowerBound> <upperBound>
+Generates a random number from lower to upper
+
+/prioritize <operation>
+Basically Parenthesis
+
+
+/****************************************************************/
+/       Conditionals                                             /
+/****************************************************************/
+
+NOTE: YOU CANNOT COMPARE OBJECTS OF DIFFERENT TYPES
+
+/compare <obj1> <obj2>
+tells you whether object 1 is greater than less than or equal to
+
+/eq <obj1> <obj2>
+=
+
+/gt <obj1> <obj2>
+>
+
+/lt <obj1> <obj2>
+<
+
+/gte <obj1> <obj2>
+>=
+
+/lte <obj1> <obj2>
+<=
+
+/****************************************************************/
+/       Ifs and loops                                            /
+/****************************************************************/
+
+/if <condition> <true> <false>
+
+/while <condition> <do>
+
+/for <variableName> <endCondition> <incrementer> <do>
+
+/{ /<commands> }
+This is a pipeline, you can do multiple commands in here except /{}
+
+/****************************************************************/
+/       Other                                                    /
+/****************************************************************/
+
