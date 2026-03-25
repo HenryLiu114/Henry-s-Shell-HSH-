@@ -25,8 +25,8 @@ Remove the new temporary data file
 /load <fileName> 
 Loads a data file from storage
 
-/store <fileName>
-Saves a temporary data file to storage
+/store
+Saves the temporary data file to storage
 
 /delete <fileName>
 Deletes a data file
@@ -99,11 +99,20 @@ x^y
 /root <x> <y>
 yth root of x
 
-/rand <lowerBound> <upperBound>
-Generates a random number from lower to upper
+/intdiv <x> <y>
+uses integer division
 
-/prioritize <operation>
-Basically Parenthesis
+/rand <lowerBound> <upperBound>
+Generates a random integers number from lower to upper
+
+/randf <lowerBound> <upperBound>
+Generates a random floating point number from lower to upper
+
+/toint
+Turns the output to a integer
+
+/tofloat
+Turns the output to a double
 
 
 /****************************************************************/
