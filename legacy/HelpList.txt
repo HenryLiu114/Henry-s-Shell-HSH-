@@ -45,6 +45,8 @@ Switch the current allocation
 /       Variables                                                /
 /****************************************************************/
 
+TYPES: string, int, double
+
 /var <varname> <initialize>
 Creates a new variable (TYPE IS INFERRED)
 ex: 1 is considered a integer
@@ -57,16 +59,10 @@ Lists all the variables in the allocation
 /svar <varname> <setTo>
 Sets a variable to a specified value
 
-/rvar <varname>
+/rvar <type> <varname>
 Removes a variable
 
-/intram 
-Returns the hashmap of the integers
-
-/floatram
-Returns the hashmap of the doubles
-
-/strram
+/ram
 Returns the hashmap of the Strings
 
 

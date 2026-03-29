@@ -1,3 +1,5 @@
+package legacy;
+
 import java.util.HashMap;
 
 public class AllocationFile {
