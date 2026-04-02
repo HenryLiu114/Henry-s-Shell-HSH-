@@ -1,4 +1,6 @@
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Stack;
 
 public class Lexer {
     public enum TokenType {
@@ -7,8 +9,7 @@ public class Lexer {
         OpenParth, ClosedParth,
         Var,
         Identifier,
-        Integer,
-        End;
+        Integer;
     }
 
     public class Token {
@@ -67,7 +68,7 @@ public class Lexer {
 
         // Build Tokens
         int i = 0;
-        while (src.length() > 0 && i < spl.size()) {
+        while (i < spl.size()) {
             switch (spl.get(i)) {
                 case "/":
                     res.add(tokens(spl.get(i), TokenType.CommandStarter));
@@ -87,9 +88,6 @@ public class Lexer {
                 case "var":
                     res.add(tokens(spl.get(i), TokenType.Var));
                     break;
-                case ".":
-                    res.add(tokens(spl.get(i), TokenType.End));
-                    break;
                 default:
                     try {
                         Integer.parseInt(spl.get(i));
@@ -105,4 +103,68 @@ public class Lexer {
         return res;
     }
 
+    public TreeNode parse(LinkedList<Token> lexedList) {
+        HashMap<String, Integer> commands = new HashMap<>();
+        commands.put("add", 2);
+        commands.put("sub", 2);
+        commands.put("mul", 2);
+        commands.put("div", 2);
+        commands.put("var", 2);
+
+        if (lexedList.isEmpty()) {
+            return null;
+        }
+
+        Token cur = lexedList.removeFirst();
+
+
+        if (cur.type == TokenType.CommandStarter) {
+            if (lexedList.isEmpty())
+                return null;
+            cur = lexedList.removeFirst();
+        }
+
+        String token = cur.value;
+        TreeNode curNode = new TreeNode(token);
+
+        if (commands.containsKey(token)) {
+            int arity = commands.get(token);
+
+            for (int i = 0; i < arity; i++) {
+                TreeNode child = parse(lexedList);
+                curNode.children.add(child);
+            }
+        }
+
+        return curNode;
+    }
+
+    public static Stack<String> interpreter(TreeNode tree) {
+        Stack<TreeNode> postStack = new Stack<>();
+        Stack<String> popOrder = new Stack<>();
+        // Uses DFS
+        postStack.push(tree);
+        while (!postStack.isEmpty()) {
+            TreeNode cur = postStack.pop();
+            popOrder.push(cur.data);
+            if (!cur.children.isEmpty()) {
+                for (int i = cur.children.size() - 1; i >= 0; i--) {
+                    postStack.push(cur.children.get(i));
+                }
+            }
+        }
+
+        System.out.println(popOrder.toString());
+        return popOrder;
+    }
+
+    class TreeNode {
+        String data;
+        LinkedList<TreeNode> children;
+
+        TreeNode(String d) {
+            data = d;
+            children = new LinkedList<>();
+        }
+    }
 }
