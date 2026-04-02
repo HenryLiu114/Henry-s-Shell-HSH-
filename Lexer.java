@@ -139,9 +139,11 @@ public class Lexer {
         return curNode;
     }
 
-    public static Stack<String> interpreter(TreeNode tree) {
+    public static LinkedList<String> interpreter(TreeNode tree) {
         Stack<TreeNode> postStack = new Stack<>();
         Stack<String> popOrder = new Stack<>();
+        LinkedList<String> res = new LinkedList<>();
+
         // Uses DFS
         postStack.push(tree);
         while (!postStack.isEmpty()) {
@@ -154,8 +156,12 @@ public class Lexer {
             }
         }
 
-        System.out.println(popOrder.toString());
-        return popOrder;
+        while(!popOrder.isEmpty()){
+            res.add(popOrder.pop());
+        }
+
+        System.out.println(res.toString());
+        return res;
     }
 
     class TreeNode {
