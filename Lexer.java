@@ -7,7 +7,8 @@ public class Lexer {
         CommandStarter,
         BinaryOperator,
         OpenParth, ClosedParth,
-        Var,
+        StringQuotes, StringOPs,
+        Var, location, free, usevar, system,
         Identifier,
         Integer;
     }
@@ -42,18 +43,33 @@ public class Lexer {
     private static LinkedList<String> customSplit(String s) {
         LinkedList<String> res = new LinkedList<>();
         String curString = "";
+        boolean isStr = false;
+        int curargs = 0;
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
-            if (c == '(' || c == ')' || c == '.' || c == '/') {
+            if (c == '.' || c == '/') {
                 if (!curString.isEmpty())
                     res.add(curString);
                 curString = "";
                 res.add(c + "");
-            } else if (c == ' ') {
+            } 
+            else if(c == '('){
+                curString += "(";
+                curargs++;
+            }
+            else if(c == ')'){
+                curString += ")";
+                curargs--;
+            }
+            else if(c == '"'){
+                isStr = !isStr;
+            }
+            else if (c == ' ' && !isStr && curargs == 0) {
                 if (!curString.isEmpty())
                     res.add(curString);
                 curString = "";
-            } else {
+            } 
+            else {
                 curString += c;
             }
         }
@@ -79,6 +95,9 @@ public class Lexer {
                 case ")":
                     res.add(tokens(spl.get(i), TokenType.ClosedParth));
                     break;
+                case "\"":
+                    res.add(tokens(spl.get(i), TokenType.StringQuotes));
+                    break;
                 case "add":
                 case "sub":
                 case "mul":
@@ -87,6 +106,21 @@ public class Lexer {
                     break;
                 case "var":
                     res.add(tokens(spl.get(i), TokenType.Var));
+                    break;
+                case "varat":
+                    res.add(tokens(spl.get(i), TokenType.location));
+                    break;
+                case "free":
+                    res.add(tokens(spl.get(i), TokenType.free));
+                    break;
+                case "usevar":
+                    res.add(tokens(spl.get(i), TokenType.usevar));
+                    break;
+                case "print":
+                    res.add(tokens(spl.get(i), TokenType.system));
+                    break;
+                case "concat":
+                    res.add(tokens(spl.get(i), TokenType.StringOPs));
                     break;
                 default:
                     try {
@@ -110,6 +144,12 @@ public class Lexer {
         commands.put("mul", 2);
         commands.put("div", 2);
         commands.put("var", 2);
+        commands.put("allo", 2);
+        commands.put("free", 1);
+        commands.put("varat", 2);
+        commands.put("usevar", 1);
+        commands.put("print", 1);
+        commands.put("concat", 2);
 
         if (lexedList.isEmpty()) {
             return null;
@@ -159,8 +199,6 @@ public class Lexer {
         while(!popOrder.isEmpty()){
             res.add(popOrder.pop());
         }
-
-        System.out.println(res.toString());
         return res;
     }
 
