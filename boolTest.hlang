@@ -1,4 +1,8 @@
-/if /gteq 5 4 
-    /{/var x /add 5 4, /print /usevar x} 
+/var x 15.
+/var y 10.
+/print /usevar x.
+/print /usevar y.
+/if /{/gteq /usevar x /usevar y} 
+    /{/print /add /usevar x /usevar y}
     /print false 
     /endif.

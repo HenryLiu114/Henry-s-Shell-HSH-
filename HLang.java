@@ -60,6 +60,8 @@ public class HLang {
         for (int i = 0; i < arr.size(); i++) {
             String cur = arr.get(i);
             LinkedList<String> sn = Lexer.interpreter(lex.parse(lex.tokenize(cur)));
+            //System.out.println(cur);
+            //System.out.println(sn.toString());
             for (int j = 0; j < sn.size(); j++) {
                 switch (sn.get(j)) {
                     case "add":
@@ -226,8 +228,8 @@ public class HLang {
                         commands.put("lt", 2);
                         commands.put("gteq", 2);
                         commands.put("gt", 2);
-                        commands.put("if", -1);
-                        commands.put("{", -1);
+                        commands.put("endif", -1);
+                        commands.put("}", -1);
 
                         int k = j + 1;
                         int b = 0;
@@ -235,18 +237,36 @@ public class HLang {
                         String[] branch = new String[3];
                         while (!sn.get(k).equals("if") && k < sn.size() && b < 3) {
                             if (commands.containsKey(sn.get(k))) {
-                                branch[b] = "/" + sn.get(k);
-                                for (int count = 0; count < commands.get(sn.get(k)); count++) {
-                                    branch[b] += " " + valStack.pop();
+                                if (sn.get(k).equals("}")) {
+                                    int m = k + 1;
+                                    String fullcmd = "";
+                                    Stack<String> tempStack = new Stack<>();
+                                    while (!sn.get(m).equals("{")) {
+                                        tempStack.add(sn.get(m));
+                                        m++;
+                                    }
+                                    while (!tempStack.isEmpty()) {
+                                        fullcmd += tempStack.pop();
+                                    }
+                                    branch[b] = fullcmd;
+                                    b++;
+                                    k = m;
+                                } else {
+                                    branch[b] = "/" + sn.get(k);
+                                    for (int count = 0; count < commands.get(sn.get(k)); count++) {
+                                        branch[b] += " " + valStack.pop();
+                                    }
+                                    branch[b] += ".";
+                                    b++;
                                 }
-                                branch[b] += ".";
-                                b++;
+
                             } else {
                                 valStack.push(sn.get(k));
                             }
                             k++;
                         }
-                        System.out.println(Arrays.toString(branch));
+
+                        //System.out.println(Arrays.toString(branch));
                         compile(branch[2], varList, valStack);
                         String compare = valStack.pop();
                         if (compare.equals("T")) {
@@ -256,8 +276,6 @@ public class HLang {
                         }
                         j = k;
                         break;
-                        case "}":
-                            break;
                     default:
                         valStack.push(sn.get(j));
                         break;

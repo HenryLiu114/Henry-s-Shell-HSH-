@@ -51,9 +51,9 @@ public class Lexer {
         int curargs = 0;
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
-            if ((c == '.' || c == '/' || c == ',') && isStr) {
+            if ((c == '.' || c == '/' || c == ',' || c == '{' || c == '}') && isStr) {
                 curString += c;
-            } else if ((c == '.' || c == '/' || c == ',') && !isStr) {
+            } else if ((c == '.' || c == '/' || c == ',' || c == '{' || c == '}') && !isStr) {
                 if (!curString.isEmpty())
                     res.add(curString);
                 curString = "";
@@ -70,8 +70,7 @@ public class Lexer {
                 if (!curString.isEmpty())
                     res.add(curString);
                 curString = "";
-            } 
-            else {
+            } else {
                 curString += c;
             }
         }
@@ -222,7 +221,29 @@ public class Lexer {
                     return ifNode;
                 } else if (token.equals("{")) {
                     TreeNode progN = new TreeNode("{");
-                    //IMPLEMENT PROGN
+                    String cmd = "";
+                    while (!lexedList.isEmpty() && lexedList.peek().type != TokenType.ProgNRB) {
+                        Token next = lexedList.peek();
+                        // Treat comma as newline → just skip it
+                        if (next.type == TokenType.ProgNSplitter) {
+                            lexedList.removeFirst();
+                            progN.children.add(new TreeNode(cmd + "."));
+                            cmd = "";
+                        } else {
+                            if (next.type == TokenType.CommandStarter) {
+                                lexedList.removeFirst();
+                                cmd += "/";
+                            } else {
+                                cmd += lexedList.removeFirst().value + " ";
+                            }
+                        }
+                    }
+                    progN.children.add(new TreeNode(cmd + "."));
+                    progN.children.add(new TreeNode("}"));
+                    if (!lexedList.isEmpty()) {
+                        lexedList.removeFirst(); // actually remove the '}'
+                    }
+
                     return progN;
                 }
             }
