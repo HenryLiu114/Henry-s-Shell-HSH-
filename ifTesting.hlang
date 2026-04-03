@@ -1,0 +1,5 @@
+/var x 5.
+/var y 10.
+/print /usevar x.
+/print /usevar y.
+/if /eq 15 5 /print "true" /print "false" /endif.

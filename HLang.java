@@ -28,21 +28,29 @@ public class HLang {
 
     public static LinkedList<String> splitPeriods(String n) {
         String cur = "";
-        String temp = "";
         LinkedList<String> res = new LinkedList<>();
+        boolean inQuotes = false;
+
         for (int i = 0; i < n.length(); i++) {
-            if (n.charAt(i) == '.') {
-                temp = cur + ".";
-                if (temp.contains("\\.")) {
-                    cur = temp;
-                } else {
-                    res.add(cur);
-                    cur = "";
-                }
+            char c = n.charAt(i);
+
+            if (c == '"') {
+                inQuotes = !inQuotes; // toggle inside quotes
+                cur += c;
+            } else if (c == '.' && !inQuotes) {
+                // Split here since we're outside quotes
+                res.add(cur);
+                cur = "";
             } else {
-                cur += n.charAt(i);
+                cur += c;
             }
         }
+
+        // Add any remaining text
+        if (!cur.isEmpty()) {
+            res.add(cur);
+        }
+
         return res;
     }
 
@@ -219,35 +227,37 @@ public class HLang {
                         commands.put("gteq", 2);
                         commands.put("gt", 2);
                         commands.put("if", -1);
+                        commands.put("{", -1);
 
-                        int k = j+1;
+                        int k = j + 1;
                         int b = 0;
-                        //false, true, cond
+                        // false, true, cond
                         String[] branch = new String[3];
-                        while(!sn.get(k).equals("if") && k < sn.size()){
-                            if(commands.containsKey(sn.get(k))){
-                                branch[b] = "/"+sn.get(k);
-                                for(int count = 0; count < commands.get(sn.get(k)); count++){
+                        while (!sn.get(k).equals("if") && k < sn.size() && b < 3) {
+                            if (commands.containsKey(sn.get(k))) {
+                                branch[b] = "/" + sn.get(k);
+                                for (int count = 0; count < commands.get(sn.get(k)); count++) {
                                     branch[b] += " " + valStack.pop();
                                 }
                                 branch[b] += ".";
                                 b++;
-                            }
-                            else{
+                            } else {
                                 valStack.push(sn.get(k));
                             }
                             k++;
                         }
+                        System.out.println(Arrays.toString(branch));
                         compile(branch[2], varList, valStack);
                         String compare = valStack.pop();
-                        if(compare.equals("T")){
+                        if (compare.equals("T")) {
                             compile(branch[1], varList, valStack);
-                        }
-                        else{
+                        } else {
                             compile(branch[0], varList, valStack);
                         }
                         j = k;
                         break;
+                        case "}":
+                            break;
                     default:
                         valStack.push(sn.get(j));
                         break;

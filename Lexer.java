@@ -4,7 +4,6 @@ import java.util.Stack;
 
 public class Lexer {
 
-    
     public enum TokenType {
         CommandStarter,
         BinaryOperator,
@@ -14,7 +13,8 @@ public class Lexer {
         Identifier,
         Integer,
         Comparision,
-        IfElse, TrueCond, FalseCond, EndOfCond;
+        IfElse, EndOfCond,
+        ProgNLB, ProgNRB, ProgNSplitter;
     }
 
     public class Token {
@@ -51,24 +51,27 @@ public class Lexer {
         int curargs = 0;
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
-            if (c == '.' || c == '/') {
+            if ((c == '.' || c == '/' || c == ',') && isStr) {
+                curString += c;
+            } else if ((c == '.' || c == '/' || c == ',') && !isStr) {
                 if (!curString.isEmpty())
                     res.add(curString);
                 curString = "";
                 res.add(c + "");
-            } else if (c == '(') {
+            } else if (c == '(' && !isStr) {
                 curString += "(";
                 curargs++;
-            } else if (c == ')') {
+            } else if (c == ')' && !isStr) {
                 curString += ")";
                 curargs--;
-            } else if (c == '"') {
+            } else if (c == '\"') {
                 isStr = !isStr;
             } else if (c == ' ' && !isStr && curargs == 0) {
                 if (!curString.isEmpty())
                     res.add(curString);
                 curString = "";
-            } else {
+            } 
+            else {
                 curString += c;
             }
         }
@@ -134,6 +137,15 @@ public class Lexer {
                 case "endIf":
                     res.add(tokens(spl.get(i), TokenType.EndOfCond));
                     break;
+                case "{":
+                    res.add(tokens(spl.get(i), TokenType.ProgNLB));
+                    break;
+                case "}":
+                    res.add(tokens(spl.get(i), TokenType.ProgNRB));
+                    break;
+                case ",":
+                    res.add(tokens(spl.get(i), TokenType.ProgNSplitter));
+                    break;
                 default:
                     try {
                         Integer.parseInt(spl.get(i));
@@ -168,6 +180,7 @@ public class Lexer {
         commands.put("gteq", 2);
         commands.put("gt", 2);
         commands.put("if", -1);
+        commands.put("{", -1);
 
         if (lexedList.isEmpty()) {
             return null;
@@ -207,6 +220,10 @@ public class Lexer {
                     // endif branch
                     ifNode.children.add(parse(lexedList));
                     return ifNode;
+                } else if (token.equals("{")) {
+                    TreeNode progN = new TreeNode("{");
+                    //IMPLEMENT PROGN
+                    return progN;
                 }
             }
         }
@@ -215,7 +232,7 @@ public class Lexer {
     }
 
     public static LinkedList<String> interpreter(TreeNode tree) {
-        
+
         Stack<TreeNode> postStack = new Stack<>();
         Stack<String> popOrder = new Stack<>();
         LinkedList<String> res = new LinkedList<>();

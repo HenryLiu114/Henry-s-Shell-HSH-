@@ -1,1 +1,4 @@
-/if /gteq 5 4 /print true /print false /endif.
+/if /gteq 5 4 
+    /{/var x /add 5 4, /print /usevar x} 
+    /print false 
+    /endif.
