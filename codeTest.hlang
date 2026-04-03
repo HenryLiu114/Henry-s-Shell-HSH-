@@ -1,9 +1,13 @@
 /var x (1 2 3 4 5). 
-/var y /varat x 2. 
-/var z /add 5 /usevar y. 
-/print /concat "The sum of " /concat "5 + " /concat /usevar y /concat " = " /usevar z.
 
-/var x 10.
-/var y 15.
-/var z /add /usevar x /usevar y.
-/print /usevar z.
+/var y 
+    /varat x 2. 
+
+/var z 
+    /add 5 /usevar y. 
+
+/print 
+    /concat "The sum of " 
+        /concat "5 + " 
+            /concat /usevar y 
+                /concat " = " /usevar z.

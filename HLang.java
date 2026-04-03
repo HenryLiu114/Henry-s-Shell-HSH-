@@ -3,19 +3,26 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
+
 import java.io.*;
 import java.util.Scanner;
 
 public class HLang {
     public static void main(String[] args) throws FileNotFoundException {
-        Scanner fc = new Scanner(new File("codeTest.hlang"));
+        Scanner fc = new Scanner(new File(args[0] + ".hlang"));
         Queue<String> commandQueue = new LinkedList<>();
         HashMap<String, LinkedList<String>> varList = new HashMap<>();
-        while(fc.hasNextLine()){
+        Stack<String> s = new Stack<>();
+        while (fc.hasNextLine()) {
             commandQueue.add(fc.nextLine());
         }
-        while(!commandQueue.isEmpty()){
-            compile(commandQueue.remove(), varList);
+        while (!commandQueue.isEmpty()) {
+            String line = commandQueue.remove();
+            while (line.charAt(line.length() - 1) != '.' && !commandQueue.isEmpty()) {
+                line += commandQueue.remove();
+            }
+
+            compile(line, varList, s);
         }
     }
 
@@ -39,13 +46,12 @@ public class HLang {
         return res;
     }
 
-    public static void compile(String n, HashMap<String, LinkedList<String>> varList) {
+    public static void compile(String n, HashMap<String, LinkedList<String>> varList, Stack<String> valStack) {
         Lexer lex = new Lexer();
         LinkedList<String> arr = splitPeriods(n);
         for (int i = 0; i < arr.size(); i++) {
             String cur = arr.get(i);
             LinkedList<String> sn = Lexer.interpreter(lex.parse(lex.tokenize(cur)));
-            Stack<String> valStack = new Stack<>();
             for (int j = 0; j < sn.size(); j++) {
                 switch (sn.get(j)) {
                     case "add":
@@ -53,22 +59,22 @@ public class HLang {
                         int second;
                         first = Integer.parseInt(valStack.pop());
                         second = Integer.parseInt(valStack.pop());
-                        valStack.push(""+(first+second));
+                        valStack.push("" + (first + second));
                         break;
                     case "sub":
                         first = Integer.parseInt(valStack.pop());
                         second = Integer.parseInt(valStack.pop());
-                        valStack.push(""+(first-second));
+                        valStack.push("" + (first - second));
                         break;
                     case "mul":
                         first = Integer.parseInt(valStack.pop());
                         second = Integer.parseInt(valStack.pop());
-                        valStack.push(""+(first*second));
+                        valStack.push("" + (first * second));
                         break;
                     case "div":
                         first = Integer.parseInt(valStack.pop());
                         second = Integer.parseInt(valStack.pop());
-                        valStack.push(""+(first/second));
+                        valStack.push("" + (first / second));
                         break;
                     case "var":
                         String f;
@@ -76,14 +82,13 @@ public class HLang {
                         f = valStack.pop();
                         s = valStack.pop();
                         LinkedList<String> l = new LinkedList<>();
-                        if(s.charAt(0) == '(' && s.charAt(s.length()-1) == ')'){
-                            s = s.substring(1, s.length()-1);
+                        if (s.charAt(0) == '(' && s.charAt(s.length() - 1) == ')') {
+                            s = s.substring(1, s.length() - 1);
                             String[] sarg = s.split(" ");
-                            for(int k = 0; k < sarg.length; k++){
+                            for (int k = 0; k < sarg.length; k++) {
                                 l.add(sarg[k]);
                             }
-                        }
-                        else{
+                        } else {
                             l.add(s);
                         }
                         varList.put(f, l);
@@ -108,7 +113,140 @@ public class HLang {
                     case "concat":
                         f = valStack.pop();
                         s = valStack.pop();
-                        valStack.push(f+s);
+                        valStack.push(f + s);
+                        break;
+                    case "eq":
+                        f = valStack.pop();
+                        s = valStack.pop();
+                        try {
+                            if (Integer.parseInt(f) == Integer.parseInt(s)) {
+                                valStack.push("T");
+                            } else {
+                                valStack.push("NIL");
+                            }
+                        } catch (NumberFormatException e) {
+                            if (f.equals(s)) {
+                                valStack.push("T");
+                            } else {
+                                valStack.push("NIL");
+                            }
+                        }
+                        break;
+                    case "lteq":
+                        f = valStack.pop();
+                        s = valStack.pop();
+                        try {
+                            if (Integer.parseInt(f) <= Integer.parseInt(s)) {
+                                valStack.push("T");
+                            } else {
+                                valStack.push("NIL");
+                            }
+                        } catch (NumberFormatException e) {
+                            if (f.compareTo(s) < 0 || f.equals(s)) {
+                                valStack.push("T");
+                            } else {
+                                valStack.push("NIL");
+                            }
+                        }
+                        break;
+                    case "lt":
+                        f = valStack.pop();
+                        s = valStack.pop();
+                        try {
+                            if (Integer.parseInt(f) < Integer.parseInt(s)) {
+                                valStack.push("T");
+                            } else {
+                                valStack.push("NIL");
+                            }
+                        } catch (NumberFormatException e) {
+                            if (f.compareTo(s) < 0) {
+                                valStack.push("T");
+                            } else {
+                                valStack.push("NIL");
+                            }
+                        }
+                        break;
+                    case "gteq":
+                        f = valStack.pop();
+                        s = valStack.pop();
+                        try {
+                            if (Integer.parseInt(f) >= Integer.parseInt(s)) {
+                                valStack.push("T");
+                            } else {
+                                valStack.push("NIL");
+                            }
+                        } catch (NumberFormatException e) {
+                            if (f.compareTo(s) > 0 || f.equals(s)) {
+                                valStack.push("T");
+                            } else {
+                                valStack.push("NIL");
+                            }
+                        }
+                        break;
+                    case "gt":
+                        f = valStack.pop();
+                        s = valStack.pop();
+                        try {
+                            if (Integer.parseInt(f) > Integer.parseInt(s)) {
+                                valStack.push("T");
+                            } else {
+                                valStack.push("NIL");
+                            }
+                        } catch (NumberFormatException e) {
+                            if (f.compareTo(s) > 0) {
+                                valStack.push("T");
+                            } else {
+                                valStack.push("NIL");
+                            }
+                        }
+                        break;
+                    case "endif":
+                        HashMap<String, Integer> commands = new HashMap<>();
+                        commands.put("add", 2);
+                        commands.put("sub", 2);
+                        commands.put("mul", 2);
+                        commands.put("div", 2);
+                        commands.put("var", 2);
+                        commands.put("allo", 2);
+                        commands.put("free", 1);
+                        commands.put("varat", 2);
+                        commands.put("usevar", 1);
+                        commands.put("print", 1);
+                        commands.put("concat", 2);
+                        commands.put("eq", 2);
+                        commands.put("lteq", 2);
+                        commands.put("lt", 2);
+                        commands.put("gteq", 2);
+                        commands.put("gt", 2);
+                        commands.put("if", -1);
+
+                        int k = j+1;
+                        int b = 0;
+                        //false, true, cond
+                        String[] branch = new String[3];
+                        while(!sn.get(k).equals("if") && k < sn.size()){
+                            if(commands.containsKey(sn.get(k))){
+                                branch[b] = "/"+sn.get(k);
+                                for(int count = 0; count < commands.get(sn.get(k)); count++){
+                                    branch[b] += " " + valStack.pop();
+                                }
+                                branch[b] += ".";
+                                b++;
+                            }
+                            else{
+                                valStack.push(sn.get(k));
+                            }
+                            k++;
+                        }
+                        compile(branch[2], varList, valStack);
+                        String compare = valStack.pop();
+                        if(compare.equals("T")){
+                            compile(branch[1], varList, valStack);
+                        }
+                        else{
+                            compile(branch[0], varList, valStack);
+                        }
+                        j = k;
                         break;
                     default:
                         valStack.push(sn.get(j));

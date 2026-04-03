@@ -3,6 +3,8 @@ import java.util.LinkedList;
 import java.util.Stack;
 
 public class Lexer {
+
+    
     public enum TokenType {
         CommandStarter,
         BinaryOperator,
@@ -10,7 +12,9 @@ public class Lexer {
         StringQuotes, StringOPs,
         Var, location, free, usevar, system,
         Identifier,
-        Integer;
+        Integer,
+        Comparision,
+        IfElse, TrueCond, FalseCond, EndOfCond;
     }
 
     public class Token {
@@ -52,24 +56,19 @@ public class Lexer {
                     res.add(curString);
                 curString = "";
                 res.add(c + "");
-            } 
-            else if(c == '('){
+            } else if (c == '(') {
                 curString += "(";
                 curargs++;
-            }
-            else if(c == ')'){
+            } else if (c == ')') {
                 curString += ")";
                 curargs--;
-            }
-            else if(c == '"'){
+            } else if (c == '"') {
                 isStr = !isStr;
-            }
-            else if (c == ' ' && !isStr && curargs == 0) {
+            } else if (c == ' ' && !isStr && curargs == 0) {
                 if (!curString.isEmpty())
                     res.add(curString);
                 curString = "";
-            } 
-            else {
+            } else {
                 curString += c;
             }
         }
@@ -122,6 +121,19 @@ public class Lexer {
                 case "concat":
                     res.add(tokens(spl.get(i), TokenType.StringOPs));
                     break;
+                case "eq":
+                case "lteq":
+                case "lt":
+                case "gteq":
+                case "gt":
+                    res.add(tokens(spl.get(i), TokenType.Comparision));
+                    break;
+                case "if":
+                    res.add(tokens(spl.get(i), TokenType.IfElse));
+                    break;
+                case "endIf":
+                    res.add(tokens(spl.get(i), TokenType.EndOfCond));
+                    break;
                 default:
                     try {
                         Integer.parseInt(spl.get(i));
@@ -150,13 +162,18 @@ public class Lexer {
         commands.put("usevar", 1);
         commands.put("print", 1);
         commands.put("concat", 2);
+        commands.put("eq", 2);
+        commands.put("lteq", 2);
+        commands.put("lt", 2);
+        commands.put("gteq", 2);
+        commands.put("gt", 2);
+        commands.put("if", -1);
 
         if (lexedList.isEmpty()) {
             return null;
         }
 
         Token cur = lexedList.removeFirst();
-
 
         if (cur.type == TokenType.CommandStarter) {
             if (lexedList.isEmpty())
@@ -169,10 +186,28 @@ public class Lexer {
 
         if (commands.containsKey(token)) {
             int arity = commands.get(token);
+            if (arity != -1) {
+                for (int i = 0; i < arity; i++) {
+                    TreeNode child = parse(lexedList);
+                    curNode.children.add(child);
+                }
+            } else {
+                if (token.equals("if")) {
+                    TreeNode ifNode = new TreeNode("if");
 
-            for (int i = 0; i < arity; i++) {
-                TreeNode child = parse(lexedList);
-                curNode.children.add(child);
+                    // condition
+                    ifNode.children.add(parse(lexedList));
+
+                    // then branch
+                    ifNode.children.add(parse(lexedList));
+
+                    // else branch
+                    ifNode.children.add(parse(lexedList));
+
+                    // endif branch
+                    ifNode.children.add(parse(lexedList));
+                    return ifNode;
+                }
             }
         }
 
@@ -180,6 +215,7 @@ public class Lexer {
     }
 
     public static LinkedList<String> interpreter(TreeNode tree) {
+        
         Stack<TreeNode> postStack = new Stack<>();
         Stack<String> popOrder = new Stack<>();
         LinkedList<String> res = new LinkedList<>();
@@ -196,19 +232,10 @@ public class Lexer {
             }
         }
 
-        while(!popOrder.isEmpty()){
+        while (!popOrder.isEmpty()) {
             res.add(popOrder.pop());
         }
+
         return res;
-    }
-
-    class TreeNode {
-        String data;
-        LinkedList<TreeNode> children;
-
-        TreeNode(String d) {
-            data = d;
-            children = new LinkedList<>();
-        }
     }
 }

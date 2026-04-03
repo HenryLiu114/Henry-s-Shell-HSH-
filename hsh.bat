@@ -1,4 +1,4 @@
 @echo off
-del HenryShell.class
-javac HenryShell.java
-java HenryShell %*
+del HLang.class
+javac *.java
+java HLang %*
