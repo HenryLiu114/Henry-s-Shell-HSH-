@@ -1,5 +1,3 @@
 /var x 5.
 /var y 10.
-/print /usevar x.
-/print /usevar y.
-/if /eq 15 5 /print "true" /print "false" /endif.
+/if /{ /gteq /usevar x 15 } /print yes /print no /endif.

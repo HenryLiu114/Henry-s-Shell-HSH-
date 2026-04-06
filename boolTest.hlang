@@ -1,8 +1,12 @@
-/var x 15.
-/var y 10.
-/print /usevar x.
-/print /usevar y.
+/var x 5.
+/var y 2.
 /if /{/gteq /usevar x /usevar y} 
-    /{/print /add /usevar x /usevar y}
+    /if /{/lteq /usevar x 15} 
+        /if /{lteq /usevar x 10} 
+            /print y 
+            /print n 
+            /endif 
+        /print no 
+        /endif
     /print false 
     /endif.

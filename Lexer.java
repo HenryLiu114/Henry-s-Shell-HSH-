@@ -133,7 +133,7 @@ public class Lexer {
                 case "if":
                     res.add(tokens(spl.get(i), TokenType.IfElse));
                     break;
-                case "endIf":
+                case "endif":
                     res.add(tokens(spl.get(i), TokenType.EndOfCond));
                     break;
                 case "{":

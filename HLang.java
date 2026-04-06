@@ -21,7 +21,6 @@ public class HLang {
             while (line.charAt(line.length() - 1) != '.' && !commandQueue.isEmpty()) {
                 line += commandQueue.remove();
             }
-
             compile(line, varList, s);
         }
     }
@@ -61,6 +60,7 @@ public class HLang {
             String cur = arr.get(i);
             LinkedList<String> sn = Lexer.interpreter(lex.parse(lex.tokenize(cur)));
             //System.out.println(cur);
+            //System.out.println(arr.toString());
             //System.out.println(sn.toString());
             for (int j = 0; j < sn.size(); j++) {
                 switch (sn.get(j)) {
@@ -230,14 +230,36 @@ public class HLang {
                         commands.put("gt", 2);
                         commands.put("endif", -1);
                         commands.put("}", -1);
-
+                        
                         int k = j + 1;
                         int b = 0;
+
                         // false, true, cond
                         String[] branch = new String[3];
-                        while (!sn.get(k).equals("if") && k < sn.size() && b < 3) {
+                        while (k < sn.size() && b < 3) {
                             if (commands.containsKey(sn.get(k))) {
-                                if (sn.get(k).equals("}")) {
+                                if(sn.get(k).equals("endif")){
+                                    int m = k + 1;
+                                    String fullcmd = "/if";
+                                    Stack<String> tempStack = new Stack<>();
+                                    while (!sn.get(m).equals("if")) {
+                                        tempStack.add(removeBadPeriods(sn.get(m)));
+                                        m++;
+                                    }
+                                    while (!tempStack.isEmpty()) {
+                                        if((commands.containsKey(tempStack.peek()) || tempStack.peek().equals("{")) && !tempStack.peek().equals("}")){
+                                            fullcmd += " /"+tempStack.pop();
+                                        }
+                                        else{
+                                            fullcmd += " "+tempStack.pop();
+                                        }
+                                    }
+                                    fullcmd += " /endif.";
+                                    branch[b] = fullcmd;
+                                    b++;
+                                    k = m;
+                                }
+                                else if (sn.get(k).equals("}")) {
                                     int m = k + 1;
                                     String fullcmd = "";
                                     Stack<String> tempStack = new Stack<>();
@@ -270,11 +292,14 @@ public class HLang {
                         compile(branch[2], varList, valStack);
                         String compare = valStack.pop();
                         if (compare.equals("T")) {
+                            //System.out.println(branch[1]);
                             compile(branch[1], varList, valStack);
+                            
                         } else {
                             compile(branch[0], varList, valStack);
                         }
                         j = k;
+                        
                         break;
                     default:
                         valStack.push(sn.get(j));
@@ -282,5 +307,23 @@ public class HLang {
                 }
             }
         }
+    }
+
+    private static String removeBadPeriods(String s){
+        String ret = "";
+        boolean inQuotes = false;
+        for(int i = 0; i < s.length(); i++){
+            if(s.charAt(i) == '"'){
+                inQuotes = !inQuotes;
+            }
+            else if(s.charAt(i) == '.' && !inQuotes){
+                //literally do nothing
+            }
+            else{
+                ret += s.charAt(i);
+            }
+        }
+
+        return ret;
     }
 }
