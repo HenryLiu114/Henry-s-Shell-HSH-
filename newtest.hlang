@@ -1,3 +1,10 @@
 /var x 5.
 /var y 10.
-/print /eq /usevar x /usevar y
+/var z 11.
+/if /{/and /lteq /usevar x /usevar y /lteq /usevar x /usevar y}
+    /if /{/lteq /usevar y /usevar z}
+        /print "H H"
+        /print "I I"
+        /endif
+    /print no
+    /endif.

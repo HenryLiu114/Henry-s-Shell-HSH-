@@ -14,7 +14,8 @@ public class Lexer {
         Integer,
         Comparision,
         IfElse, EndOfCond,
-        ProgNLB, ProgNRB, ProgNSplitter;
+        ProgNLB, ProgNRB, ProgNSplitter,
+        Conditional;
     }
 
     public class Token {
@@ -66,6 +67,7 @@ public class Lexer {
                 curargs--;
             } else if (c == '\"') {
                 isStr = !isStr;
+                curString += "\"";
             } else if (c == ' ' && !isStr && curargs == 0) {
                 if (!curString.isEmpty())
                     res.add(curString);
@@ -145,6 +147,11 @@ public class Lexer {
                 case ",":
                     res.add(tokens(spl.get(i), TokenType.ProgNSplitter));
                     break;
+                case "and":
+                case "or":
+                case "not":
+                    res.add(tokens(spl.get(i), TokenType.Conditional));
+                    break;
                 default:
                     try {
                         Integer.parseInt(spl.get(i));
@@ -180,6 +187,9 @@ public class Lexer {
         commands.put("gt", 2);
         commands.put("if", -1);
         commands.put("{", -1);
+        commands.put("and", 2);
+        commands.put("or", 2);
+        commands.put("not", 1);
 
         if (lexedList.isEmpty()) {
             return null;

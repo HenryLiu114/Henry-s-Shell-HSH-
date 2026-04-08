@@ -32,10 +32,10 @@ public class HLang {
 
         for (int i = 0; i < n.length(); i++) {
             char c = n.charAt(i);
-
+            // System.out.println(cur);
             if (c == '"') {
                 inQuotes = !inQuotes; // toggle inside quotes
-                cur += c;
+                cur += "\"";
             } else if (c == '.' && !inQuotes) {
                 // Split here since we're outside quotes
                 res.add(cur);
@@ -59,10 +59,12 @@ public class HLang {
         for (int i = 0; i < arr.size(); i++) {
             String cur = arr.get(i);
             LinkedList<String> sn = Lexer.interpreter(lex.parse(lex.tokenize(cur)));
-            //System.out.println(cur);
-            //System.out.println(arr.toString());
-            //System.out.println(sn.toString());
+            // System.out.println(cur);
+            // System.out.println(arr.toString());
+            System.out.println("Interpreted String: " + sn.toString());
+
             for (int j = 0; j < sn.size(); j++) {
+                System.out.println("Stack: " + valStack.toString());
                 switch (sn.get(j)) {
                     case "add":
                         int first;
@@ -122,8 +124,10 @@ public class HLang {
                         break;
                     case "concat":
                         f = valStack.pop();
+                        f = f.replace("\"", "");
                         s = valStack.pop();
-                        valStack.push(f + s);
+                        s = s.replace("\"", "");
+                        valStack.push("\""+f + s+"\"");
                         break;
                     case "eq":
                         f = valStack.pop();
@@ -230,41 +234,45 @@ public class HLang {
                         commands.put("gt", 2);
                         commands.put("endif", -1);
                         commands.put("}", -1);
-                        
+                        commands.put("not", 1);
+                        commands.put("and", 2);
+                        commands.put("or", 2);
+
                         int k = j + 1;
                         int b = 0;
 
                         // false, true, cond
                         String[] branch = new String[3];
                         while (k < sn.size() && b < 3) {
+                            //System.out.println("Current: " + sn.get(k));
+                            //System.out.println("Branch: " + Arrays.toString(branch));
                             if (commands.containsKey(sn.get(k))) {
-                                if(sn.get(k).equals("endif")){
+                                if (sn.get(k).equals("endif")) {
                                     int m = k + 1;
                                     String fullcmd = "/if";
                                     Stack<String> tempStack = new Stack<>();
                                     while (!sn.get(m).equals("if")) {
-                                        tempStack.add(removeBadPeriods(sn.get(m)));
+                                        tempStack.push(removeBadPeriods(sn.get(m)));
                                         m++;
                                     }
                                     while (!tempStack.isEmpty()) {
-                                        if((commands.containsKey(tempStack.peek()) || tempStack.peek().equals("{")) && !tempStack.peek().equals("}")){
-                                            fullcmd += " /"+tempStack.pop();
-                                        }
-                                        else{
-                                            fullcmd += " "+tempStack.pop();
+                                        if ((commands.containsKey(tempStack.peek()) || tempStack.peek().equals("{"))
+                                                && !tempStack.peek().equals("}")) {
+                                            fullcmd += " /" + tempStack.pop();
+                                        } else {
+                                            fullcmd += " " + tempStack.pop();
                                         }
                                     }
                                     fullcmd += " /endif.";
                                     branch[b] = fullcmd;
                                     b++;
                                     k = m;
-                                }
-                                else if (sn.get(k).equals("}")) {
+                                } else if (sn.get(k).equals("}")) {
                                     int m = k + 1;
                                     String fullcmd = "";
                                     Stack<String> tempStack = new Stack<>();
                                     while (!sn.get(m).equals("{")) {
-                                        tempStack.add(sn.get(m));
+                                        tempStack.push(sn.get(m));
                                         m++;
                                     }
                                     while (!tempStack.isEmpty()) {
@@ -288,18 +296,56 @@ public class HLang {
                             k++;
                         }
 
-                        //System.out.println(Arrays.toString(branch));
+                        
                         compile(branch[2], varList, valStack);
                         String compare = valStack.pop();
                         if (compare.equals("T")) {
-                            //System.out.println(branch[1]);
+                            // System.out.println(branch[1]);
                             compile(branch[1], varList, valStack);
-                            
+
                         } else {
                             compile(branch[0], varList, valStack);
                         }
                         j = k;
-                        
+
+                        break;
+                    case "and":
+                        f = valStack.pop();
+                        s = valStack.pop();
+                        if ((f.equals("T") || f.equals("NIL")) && (s.equals("T") || s.equals("NIL"))) {
+                            if (f.equals("T") && s.equals("T")) {
+                                valStack.push("T");
+                            } else {
+                                valStack.push("NIL");
+                            }
+                        } else {
+                            valStack.push("NIL");
+                        }
+                        break;
+                    case "or":
+                        f = valStack.pop();
+                        s = valStack.pop();
+                        if ((f.equals("T") || f.equals("NIL")) && (s.equals("T") || s.equals("NIL"))) {
+                            if (f.equals("T") || s.equals("T")) {
+                                valStack.push("T");
+                            } else {
+                                valStack.push("NIL");
+                            }
+                        } else {
+                            valStack.push("NIL");
+                        }
+                        break;
+                    case "not":
+                        f = valStack.pop();
+                        if (f.equals("T") || f.equals("NIL")) {
+                            if (f.equals("T")) {
+                                valStack.push("NIL");
+                            } else {
+                                valStack.push("T");
+                            }
+                        } else {
+                            valStack.push("NIL");
+                        }
                         break;
                     default:
                         valStack.push(sn.get(j));
@@ -309,17 +355,15 @@ public class HLang {
         }
     }
 
-    private static String removeBadPeriods(String s){
+    private static String removeBadPeriods(String s) {
         String ret = "";
         boolean inQuotes = false;
-        for(int i = 0; i < s.length(); i++){
-            if(s.charAt(i) == '"'){
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '"') {
                 inQuotes = !inQuotes;
-            }
-            else if(s.charAt(i) == '.' && !inQuotes){
-                //literally do nothing
-            }
-            else{
+            } else if (s.charAt(i) == '.' && !inQuotes) {
+                // literally do nothing
+            } else {
                 ret += s.charAt(i);
             }
         }
