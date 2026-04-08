@@ -9,7 +9,7 @@ At the moment, you can only run scripts for HLANG, using the command:
 | hsh <FileName<e>> |
 |-------------------|
 
-Every command must end with a '.' and start with a '/'. Some commands have special cases.
+Full Documentation here: https://docs.google.com/document/d/1nvqojG-Cqz98_qCI_f7FaMuBhDlZQEZE8lbDCH_kHAc/edit?usp=sharing
 
 
 # Changlog:
