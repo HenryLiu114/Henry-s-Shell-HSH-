@@ -1,0 +1,5 @@
+/defun sumxyz /{/var x, /var y, /var z} /{
+    /return /add x /add y z
+}
+/endfun.
+/usefun sumxyz /param (10 20 30).

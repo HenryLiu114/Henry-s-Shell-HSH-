@@ -61,10 +61,10 @@ public class HLang {
             LinkedList<String> sn = Lexer.interpreter(lex.parse(lex.tokenize(cur)));
             // System.out.println(cur);
             // System.out.println(arr.toString());
-            System.out.println("Interpreted String: " + sn.toString());
+            //System.out.println("Interpreted String: " + sn.toString());
 
             for (int j = 0; j < sn.size(); j++) {
-                System.out.println("Stack: " + valStack.toString());
+                //System.out.println("Stack: " + valStack.toString());
                 switch (sn.get(j)) {
                     case "add":
                         int first;
