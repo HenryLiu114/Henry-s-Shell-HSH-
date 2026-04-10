@@ -9,12 +9,13 @@ At the moment, you can only run scripts for HLANG, using the command:
 | hsh <FileName<e>> |
 |-------------------|
 
-Every command must end with a '.' and start with a '/'. Some commands have special cases.
+Full Documentation here: https://docs.google.com/document/d/1nvqojG-Cqz98_qCI_f7FaMuBhDlZQEZE8lbDCH_kHAc/edit?usp=sharing
 
 
 # Changlog:
 | Version | Date | Changes |
 |---------|------|---------|
+| v0.4 | Apr 8, 2026 | Added Conditionals (and, or, not). |
 | v0.35 | Apr 6, 2026 | Nested If Statements now work. |
 | v0.3 | Apr 3, 2026 | Implmented If Statements and Progn. |
 | v0.2 | Apr 2, 2026 | Implemented the basic compiler with arithmetic and comparision commands, variables, lists, as well as print and concatination. |
