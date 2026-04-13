@@ -1,0 +1,9 @@
+/defun recurSum /{var x} /{
+    /var x /sum /usevar x 10,
+    /if /{/gt /usevar x 30} 
+        /{/print x}
+        /{/usefun recurSum (x)}
+    /endif
+}
+/endfun.
+/usefun recurSum (10).

@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -12,6 +13,7 @@ public class HLang {
         Scanner fc = new Scanner(new File(args[0] + ".hlang"));
         Queue<String> commandQueue = new LinkedList<>();
         HashMap<String, LinkedList<String>> varList = new HashMap<>();
+        HashMap<String, HLangFunct> functionList = new HashMap<>();
         Stack<String> s = new Stack<>();
         while (fc.hasNextLine()) {
             commandQueue.add(fc.nextLine());
@@ -20,8 +22,9 @@ public class HLang {
             String line = commandQueue.remove();
             while (line.charAt(line.length() - 1) != '.' && !commandQueue.isEmpty()) {
                 line += commandQueue.remove();
+                //System.out.println(line);
             }
-            compile(line, varList, s);
+            compile(line, varList, s, functionList);
         }
     }
 
@@ -53,7 +56,7 @@ public class HLang {
         return res;
     }
 
-    public static void compile(String n, HashMap<String, LinkedList<String>> varList, Stack<String> valStack) {
+    public static void compile(String n, HashMap<String, LinkedList<String>> varList, Stack<String> valStack, HashMap<String, HLangFunct> functionList) {
         Lexer lex = new Lexer();
         LinkedList<String> arr = splitPeriods(n);
         for (int i = 0; i < arr.size(); i++) {
@@ -61,10 +64,10 @@ public class HLang {
             LinkedList<String> sn = Lexer.interpreter(lex.parse(lex.tokenize(cur)));
             // System.out.println(cur);
             // System.out.println(arr.toString());
-            //System.out.println("Interpreted String: " + sn.toString());
+            System.out.println("Interpreted String: " + sn.toString());
 
             for (int j = 0; j < sn.size(); j++) {
-                //System.out.println("Stack: " + valStack.toString());
+                // System.out.println("Stack: " + valStack.toString());
                 switch (sn.get(j)) {
                     case "add":
                         int first;
@@ -127,7 +130,7 @@ public class HLang {
                         f = f.replace("\"", "");
                         s = valStack.pop();
                         s = s.replace("\"", "");
-                        valStack.push("\""+f + s+"\"");
+                        valStack.push("\"" + f + s + "\"");
                         break;
                     case "eq":
                         f = valStack.pop();
@@ -244,8 +247,8 @@ public class HLang {
                         // false, true, cond
                         String[] branch = new String[3];
                         while (k < sn.size() && b < 3) {
-                            //System.out.println("Current: " + sn.get(k));
-                            //System.out.println("Branch: " + Arrays.toString(branch));
+                            // System.out.println("Current: " + sn.get(k));
+                            // System.out.println("Branch: " + Arrays.toString(branch));
                             if (commands.containsKey(sn.get(k))) {
                                 if (sn.get(k).equals("endif")) {
                                     int m = k + 1;
@@ -296,15 +299,14 @@ public class HLang {
                             k++;
                         }
 
-                        
-                        compile(branch[2], varList, valStack);
+                        compile(branch[2], varList, valStack, functionList);
                         String compare = valStack.pop();
                         if (compare.equals("T")) {
                             // System.out.println(branch[1]);
-                            compile(branch[1], varList, valStack);
+                            compile(branch[1], varList, valStack, functionList);
 
                         } else {
-                            compile(branch[0], varList, valStack);
+                            compile(branch[0], varList, valStack, functionList);
                         }
                         j = k;
 
@@ -346,6 +348,58 @@ public class HLang {
                         } else {
                             valStack.push("NIL");
                         }
+                        break;
+                    case "endfun":
+                        int funCount = j + 1;
+                        LinkedList<String> fullcmd = new LinkedList<>();
+                        LinkedList<String> params = new LinkedList<>();
+                        String functionName;
+
+                        if (sn.get(funCount).equals("}")) {
+                            funCount++;
+                            while (!sn.get(funCount).equals("{") && funCount < sn.size()) {
+                                fullcmd.addFirst(sn.get(funCount));
+                                funCount++;
+                            }
+                        } else {
+                            fullcmd.add(sn.get(funCount));
+                        }
+
+                        funCount++;
+
+                        if (sn.get(funCount).equals("}")) {
+                            funCount++;
+                            while (!sn.get(funCount).equals("{") && funCount < sn.size()) {
+                                params.addFirst(sn.get(funCount));
+                                funCount++;
+                            }
+                        } else {
+                            fullcmd.add(sn.get(funCount));
+                        }
+                        funCount++;
+
+                        functionName = sn.get(funCount);
+                        funCount++;
+                        String[] arrrr = params.toArray(new String[0]);
+                        HLangFunct funct = new HLangFunct(arrrr, fullcmd);
+                        System.out.println(Arrays.toString(funct.getParam()));
+                        System.out.println(funct.getCommands().toString());
+                        System.out.println(functionName);
+                        functionList.put(functionName, funct);
+                        break;
+                    case "usefun":
+                        int counter = j+1;
+                        String funcName = sn.get(counter);
+                        counter++;
+                        String lis = sn.get(counter);
+                        counter++;
+                        System.out.println(funcName);
+                        System.out.println(functionList.containsKey(funcName));
+                        functionList.get(funcName).useFunction(lis, varList, valStack, functionList);
+                        j = counter;
+                        break;
+                    case "return":
+
                         break;
                     default:
                         valStack.push(sn.get(j));

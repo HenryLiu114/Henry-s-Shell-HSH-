@@ -15,7 +15,8 @@ public class Lexer {
         Comparision,
         IfElse, EndOfCond,
         ProgNLB, ProgNRB, ProgNSplitter,
-        Conditional;
+        Conditional,
+        FunctionDefinition, FunctionUse, FunctionEnd, FunctionReturn, FunctionParam;
     }
 
     public class Token {
@@ -152,6 +153,18 @@ public class Lexer {
                 case "not":
                     res.add(tokens(spl.get(i), TokenType.Conditional));
                     break;
+                case "defun":
+                    res.add(tokens(spl.get(i), TokenType.FunctionDefinition));
+                    break;
+                case "usefun":
+                    res.add(tokens(spl.get(i), TokenType.FunctionUse));
+                    break;
+                case "return":
+                    res.add(tokens(spl.get(i), TokenType.FunctionReturn));
+                    break;
+                case "endfun":
+                    res.add(tokens(spl.get(i), TokenType.FunctionEnd));
+                    break;
                 default:
                     try {
                         Integer.parseInt(spl.get(i));
@@ -190,7 +203,9 @@ public class Lexer {
         commands.put("and", 2);
         commands.put("or", 2);
         commands.put("not", 1);
-
+        commands.put("usefun", -1);
+        commands.put("defun", 4);
+        commands.put("return", 1);
         if (lexedList.isEmpty()) {
             return null;
         }
@@ -229,6 +244,22 @@ public class Lexer {
                     // endif branch
                     ifNode.children.add(parse(lexedList));
                     return ifNode;
+                } else if (token.equals("usefun")) {
+                    TreeNode usefunNode = new TreeNode("usefun");
+
+                    // function name
+                    TreeNode funcName = parse(lexedList);
+                    // parameters (this should handle the (...) part)
+                    TreeNode params = parse(lexedList);
+
+                    if (funcName == null || params == null) {
+                        throw new RuntimeException("Invalid usefun syntax");
+                    }
+
+                    params.children.add(funcName);
+                    params.children.add(usefunNode);
+
+                    return params;
                 } else if (token.equals("{")) {
                     TreeNode progN = new TreeNode("{");
                     String cmd = "";
