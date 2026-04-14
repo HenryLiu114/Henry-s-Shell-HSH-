@@ -11,9 +11,8 @@ At the moment, you can only run scripts for HLANG, using the command:
 
 Full Documentation here: https://docs.google.com/document/d/1nvqojG-Cqz98_qCI_f7FaMuBhDlZQEZE8lbDCH_kHAc/edit?usp=sharing
 
-
-# Changlog:
-| Version | Date | Changes |
+# HLANG Changlog:
+| HLANG Version | Date | Changes |
 |---------|------|---------|
 | v0.4 | Apr 8, 2026 | Added Conditionals (and, or, not). |
 | v0.35 | Apr 6, 2026 | Nested If Statements now work. |
@@ -24,5 +23,15 @@ Full Documentation here: https://docs.google.com/document/d/1nvqojG-Cqz98_qCI_f7
 | v0 | Mar 25, 2026 | Early Version of HSh was developed. |
 | v0 | Mar 24, 2026 | Date of Repo Creation. |
 
+# Planned Updates:
+| HLANG Version | Date | Changes |
+|---------|------|---------|
+| v0.5 | Apr 12, 2026 | Functions: /usefun, /defun, /return, and /param. |
+| v0.6 | Apr 15, 2026 | List Operations: /listlen, /head, /tail. |
+| v0.7 | Apr 20, 2026 | Loops: /while, /for. |
+| v0.8 | May 18, 2026 | IO Stream: /prompt, /scan, and /write. |
+| v1.0 | May 20, 2026 | HLANG Development should be finished, fix any errors or bugs. |
 
-
+| HSh Version | Date | Changes |
+|---------|------|---------|
+| v1.0 | May 25, 2026 | Build the H Shell that can take HLANG Code and custom commands. |
