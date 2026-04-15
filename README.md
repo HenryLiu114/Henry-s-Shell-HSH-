@@ -14,6 +14,8 @@ Full Documentation here: https://docs.google.com/document/d/1nvqojG-Cqz98_qCI_f7
 # HLANG Changlog:
 | HLANG Version | Date | Changes |
 |---------|------|---------|
+| v0.55 | Apr 14, 2026 | Basic Recursion Implmented. |
+| v0.5 | Apr 13, 2026 | Functions: /usefun, /defun. |
 | v0.4 | Apr 8, 2026 | Added Conditionals (and, or, not). |
 | v0.35 | Apr 6, 2026 | Nested If Statements now work. |
 | v0.3 | Apr 3, 2026 | Implmented If Statements and Progn. |
@@ -26,7 +28,6 @@ Full Documentation here: https://docs.google.com/document/d/1nvqojG-Cqz98_qCI_f7
 # Planned Updates:
 | HLANG Version | Date | Changes |
 |---------|------|---------|
-| v0.5 | Apr 12, 2026 | Functions: /usefun, /defun, /return, and /param. |
 | v0.6 | Apr 15, 2026 | List Operations: /listlen, /head, /tail. |
 | v0.7 | Apr 20, 2026 | Loops: /while, /for. |
 | v0.8 | May 18, 2026 | IO Stream: /prompt, /scan, and /write. |
