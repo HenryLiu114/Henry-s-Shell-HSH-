@@ -16,7 +16,7 @@ public class Lexer {
         IfElse, EndOfCond,
         ProgNLB, ProgNRB, ProgNSplitter,
         Conditional,
-        FunctionDefinition, FunctionUse, FunctionEnd, FunctionReturn, FunctionParam;
+        FunctionDefinition, FunctionUse, FunctionEnd, FunctionReturn, FunctionParam, FunctionSProgs, FunctionEProgs, FunctionSplitter;
     }
 
     public class Token {
@@ -53,9 +53,9 @@ public class Lexer {
         int curargs = 0;
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
-            if ((c == '.' || c == '/' || c == ',' || c == '{' || c == '}') && isStr) {
+            if ((c == '.' || c == '/' || c == ',' || c == ';' || c == '{' || c == '}' || c == '[' || c == ']') && isStr) {
                 curString += c;
-            } else if ((c == '.' || c == '/' || c == ',' || c == '{' || c == '}') && !isStr) {
+            } else if ((c == '.' || c == '/' || c == ',' || c == ';' || c == '{' || c == '}' || c == '[' || c == ']') && !isStr) {
                 if (!curString.isEmpty())
                     res.add(curString);
                 curString = "";
@@ -98,6 +98,12 @@ public class Lexer {
                     break;
                 case ")":
                     res.add(tokens(spl.get(i), TokenType.ClosedParth));
+                    break;
+                case "[":
+                    res.add(tokens(spl.get(i), TokenType.FunctionSProgs));
+                    break;
+                case "]":
+                    res.add(tokens(spl.get(i), TokenType.FunctionEProgs));
                     break;
                 case "\"":
                     res.add(tokens(spl.get(i), TokenType.StringQuotes));
@@ -147,6 +153,9 @@ public class Lexer {
                     break;
                 case ",":
                     res.add(tokens(spl.get(i), TokenType.ProgNSplitter));
+                    break;
+                case ";":
+                    res.add(tokens(spl.get(i), TokenType.FunctionSplitter));
                     break;
                 case "and":
                 case "or":
@@ -206,10 +215,10 @@ public class Lexer {
         commands.put("usefun", -1);
         commands.put("defun", 4);
         commands.put("return", 1);
+        commands.put("[", -1);
         if (lexedList.isEmpty()) {
             return null;
         }
-
         Token cur = lexedList.removeFirst();
 
         if (cur.type == TokenType.CommandStarter) {
@@ -281,6 +290,33 @@ public class Lexer {
                     }
                     progN.children.add(new TreeNode(cmd + "."));
                     progN.children.add(new TreeNode("}"));
+                    if (!lexedList.isEmpty()) {
+                        lexedList.removeFirst(); // actually remove the '}'
+                    }
+
+                    return progN;
+                }
+                else if (token.equals("[")) {
+                    TreeNode progN = new TreeNode("[");
+                    String cmd = "";
+                    while (!lexedList.isEmpty() && lexedList.peek().type != TokenType.FunctionEProgs) {
+                        Token next = lexedList.peek();
+                        // Treat comma as newline → just skip it
+                        if (next.type == TokenType.FunctionSplitter) {
+                            lexedList.removeFirst();
+                            progN.children.add(new TreeNode(cmd + "."));
+                            cmd = "";
+                        } else {
+                            if (next.type == TokenType.CommandStarter) {
+                                lexedList.removeFirst();
+                                cmd += "/";
+                            } else {
+                                cmd += lexedList.removeFirst().value + " ";
+                            }
+                        }
+                    }
+                    progN.children.add(new TreeNode(cmd + "."));
+                    progN.children.add(new TreeNode("]"));
                     if (!lexedList.isEmpty()) {
                         lexedList.removeFirst(); // actually remove the '}'
                     }

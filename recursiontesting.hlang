@@ -1,9 +1,8 @@
-/defun recurSum /{var x} /{
-    /var x /sum /usevar x 10,
-    /if /{/gt /usevar x 30} 
-        /{/print x}
-        /{/usefun recurSum (x)}
+/defun recurSum /[/var x] /[
+    /if /{/gteq /usevar x 30}
+        /{/print /usevar x}
+        /{/print /usevar x, /var x /add /usevar x 5, /usefun recurSum (/usevar x)}
     /endif
-}
+]
 /endfun.
-/usefun recurSum (10).
+/usefun recurSum (0).

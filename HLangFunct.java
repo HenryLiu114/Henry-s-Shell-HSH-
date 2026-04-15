@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Stack;
@@ -8,7 +9,7 @@ public class HLangFunct {
     
     public HLangFunct(String[] param, String command){
         this.param = param;
-        String[] cmd = command.split(",");
+        String[] cmd = command.split(";");
         for(int i = 0; i < cmd.length; i++){
             commands.add(cmd[i]);
         }
@@ -38,13 +39,14 @@ public class HLangFunct {
     public void useFunction(String paramList, HashMap<String, LinkedList<String>> varList, Stack<String> valStack, HashMap<String, HLangFunct> functionList){
         String str = paramList.substring(1, paramList.length()-1);
         String[] input = str.split(" ");
+        //System.out.println("Inputs: "+Arrays.toString(input));
+        //System.out.println("Variables: "+Arrays.toString(param));
         for(int i = 0; i < input.length; i++){
             param[i] = param[i].substring(0, param[i].length()-1);
-            //System.out.println(param[i] + input[i] + ".");
             HLang.compile(param[i] + input[i] + ".", varList, valStack, functionList);
         }
-        
         for(int i = 0; i < commands.size(); i++){
+            //System.out.println(commands.get(i));
             HLang.compile(commands.get(i), varList,  valStack, functionList);
         }
     }

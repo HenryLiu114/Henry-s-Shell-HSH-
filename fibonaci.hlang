@@ -1,0 +1,17 @@
+/var s "Final Value: ".
+/var space " ".
+/defun fibo /[/var a; /var b; /var ntimes; /var i] /[
+    /if /{/gteq /usevar i /usevar ntimes} 
+        /{/print /concat /usevar s /concat /usevar a /concat /usevar space /usevar b}
+        /{
+            /var t /var a,
+            /var a /usevar b,
+            /var b /add /usevar a /usevar t, 
+            /var i /add /usevar i 1,
+            /print /usevar b,
+            /usefun fibo (/usevar a /usevar b /usevar ntimes /usevar i)
+        }
+    /endif
+]
+/endfun.
+/usefun fibo (0 1 5 0).

@@ -1,0 +1,5 @@
+/defun fibo /[/var a; /var b] /[
+    /print /add /usevar a /usevar b
+]
+/endfun.
+/usefun fibo (5 7).

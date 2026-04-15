@@ -65,7 +65,6 @@ public class HLang {
             // System.out.println(cur);
             // System.out.println(arr.toString());
             System.out.println("Interpreted String: " + sn.toString());
-
             for (int j = 0; j < sn.size(); j++) {
                 // System.out.println("Stack: " + valStack.toString());
                 switch (sn.get(j)) {
@@ -355,9 +354,9 @@ public class HLang {
                         LinkedList<String> params = new LinkedList<>();
                         String functionName;
 
-                        if (sn.get(funCount).equals("}")) {
+                        if (sn.get(funCount).equals("]")) {
                             funCount++;
-                            while (!sn.get(funCount).equals("{") && funCount < sn.size()) {
+                            while (!sn.get(funCount).equals("[") && funCount < sn.size()) {
                                 fullcmd.addFirst(sn.get(funCount));
                                 funCount++;
                             }
@@ -367,9 +366,9 @@ public class HLang {
 
                         funCount++;
 
-                        if (sn.get(funCount).equals("}")) {
+                        if (sn.get(funCount).equals("]")) {
                             funCount++;
-                            while (!sn.get(funCount).equals("{") && funCount < sn.size()) {
+                            while (!sn.get(funCount).equals("[") && funCount < sn.size()) {
                                 params.addFirst(sn.get(funCount));
                                 funCount++;
                             }
@@ -382,9 +381,9 @@ public class HLang {
                         funCount++;
                         String[] arrrr = params.toArray(new String[0]);
                         HLangFunct funct = new HLangFunct(arrrr, fullcmd);
-                        System.out.println(Arrays.toString(funct.getParam()));
-                        System.out.println(funct.getCommands().toString());
-                        System.out.println(functionName);
+                        System.out.println("Params: " + Arrays.toString(funct.getParam()));
+                        System.out.println("Commands: "+ funct.getCommands().toString());
+                        System.out.println("Funct Name: "+ functionName);
                         functionList.put(functionName, funct);
                         break;
                     case "usefun":
@@ -393,8 +392,8 @@ public class HLang {
                         counter++;
                         String lis = sn.get(counter);
                         counter++;
-                        System.out.println(funcName);
-                        System.out.println(functionList.containsKey(funcName));
+                        //System.out.println(funcName);
+                        //System.out.println(functionList.containsKey(funcName));
                         functionList.get(funcName).useFunction(lis, varList, valStack, functionList);
                         j = counter;
                         break;
