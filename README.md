@@ -14,6 +14,7 @@ Full Documentation here: https://docs.google.com/document/d/1nvqojG-Cqz98_qCI_f7
 # HLANG Changlog:
 | HLANG Version | Date | Changes |
 |---------|------|---------|
+| v0.6 | Apr 14, 2026 | List Recursion Works, and added some basic list commands: /newlist, /consvar, /uselist. Recursion now takes in either a preset list () or a list variable /newlist. |
 | v0.55 | Apr 14, 2026 | Basic Recursion Implmented. |
 | v0.5 | Apr 13, 2026 | Functions: /usefun, /defun. |
 | v0.4 | Apr 8, 2026 | Added Conditionals (and, or, not). |
