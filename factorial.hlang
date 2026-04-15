@@ -1,0 +1,23 @@
+/defun factorialH /[/var x; /var total] /[
+    /if /{/eq /usevar x 0} 
+        /{/print /usevar total}
+        /{
+            /var total /mul /usevar total /usevar x,
+            /var x /sub /usevar x 1,
+            /newlist l1,
+            /consvar l1 x,
+            /consvar l1 total,
+            /usefun factorialH l1
+        }
+    /endif
+]
+/endfun.
+/defun factorial /[/var x] /[
+    /var i 1;
+    /newlist l;
+    /consvar l x;
+    /consvar l i;
+    /usefun factorialH l
+]
+/endfun.
+/usefun factorial (5).
