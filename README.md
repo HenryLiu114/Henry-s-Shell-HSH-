@@ -29,9 +29,9 @@ Full Documentation here: https://docs.google.com/document/d/1nvqojG-Cqz98_qCI_f7
 # Planned Updates:
 | HLANG Version | Date | Changes |
 |---------|------|---------|
-| v0.6 | Apr 15, 2026 | List Operations: /listlen, /head, /tail. |
-| v0.7 | Apr 20, 2026 | Loops: /while, /for. |
-| v0.8 | May 18, 2026 | IO Stream: /prompt, /scan, and /write. |
+| v0.7 | Apr 15, 2026 | List Operations: /listlen, /head, /tail. |
+| v0.8 | Apr 20, 2026 | Loops: /while, /for. |
+| v0.9 | May 18, 2026 | IO Stream: /prompt, /scan, and /write. |
 | v1.0 | May 20, 2026 | HLANG Development should be finished, fix any errors or bugs. |
 
 | HSh Version | Date | Changes |
