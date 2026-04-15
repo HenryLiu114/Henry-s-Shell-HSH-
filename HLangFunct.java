@@ -37,17 +37,28 @@ public class HLangFunct {
     }
 
     public void useFunction(String paramList, HashMap<String, LinkedList<String>> varList, Stack<String> valStack, HashMap<String, HLangFunct> functionList){
-        String str = paramList.substring(1, paramList.length()-1);
+        String str = "";
+        if(paramList.contains("(") && paramList.contains("(")){
+            str = paramList.substring(1, paramList.length()-1);
+        }
+        else{
+            HLang.compile("/uselist " + paramList, varList, valStack, functionList);
+            str = valStack.pop();
+            //System.out.println(str);
+            str = str.replace("(","");
+            str = str.replace(")","");
+            //System.out.println(str);
+        }
         String[] input = str.split(" ");
         //System.out.println("Inputs: "+Arrays.toString(input));
         //System.out.println("Variables: "+Arrays.toString(param));
         for(int i = 0; i < input.length; i++){
-            param[i] = param[i].substring(0, param[i].length()-1);
-            HLang.compile(param[i] + input[i] + ".", varList, valStack, functionList);
+            String temp = param[i].substring(0, param[i].length()-1);
+            HLang.compile(temp + input[i] + ".", varList, valStack, functionList);
         }
         for(int i = 0; i < commands.size(); i++){
-            //System.out.println(commands.get(i));
             HLang.compile(commands.get(i), varList,  valStack, functionList);
+            //System.out.println("Executed: "+commands.get(i));
         }
     }
 }

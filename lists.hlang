@@ -1,0 +1,6 @@
+/newlist l.
+/var x /add 5 10.
+/consvar l x.
+/var y /add 10 10.
+/consvar l y.
+/print /uselist l.

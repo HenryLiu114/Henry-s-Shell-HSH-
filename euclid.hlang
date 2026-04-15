@@ -1,0 +1,16 @@
+/defun gcd /[/var a; /var b] /[
+    /if /{/eq /usevar b 0}
+        /{/print /usevar a}
+        /{
+            /newlist l,
+            /var t /usevar a,
+            /var a /usevar b,
+            /var b /mod /usevar t /usevar a,
+            /consvar l a,
+            /consvar l b,
+            /usefun gcd l
+        }
+    /endif
+]
+/endfun.
+/usefun gcd (48 18).

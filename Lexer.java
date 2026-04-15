@@ -8,7 +8,7 @@ public class Lexer {
         CommandStarter,
         BinaryOperator,
         OpenParth, ClosedParth,
-        StringQuotes, StringOPs,
+        StringQuotes, StringOPs, CommandQuotes,
         Var, location, free, usevar, system,
         Identifier,
         Integer,
@@ -16,7 +16,8 @@ public class Lexer {
         IfElse, EndOfCond,
         ProgNLB, ProgNRB, ProgNSplitter,
         Conditional,
-        FunctionDefinition, FunctionUse, FunctionEnd, FunctionReturn, FunctionParam, FunctionSProgs, FunctionEProgs, FunctionSplitter;
+        FunctionDefinition, FunctionUse, FunctionEnd, FunctionReturn, FunctionParam, FunctionSProgs, FunctionEProgs, FunctionSplitter,
+        consvar, newlist, uselist;
     }
 
     public class Token {
@@ -174,6 +175,18 @@ public class Lexer {
                 case "endfun":
                     res.add(tokens(spl.get(i), TokenType.FunctionEnd));
                     break;
+                case "consvar":
+                    res.add(tokens(spl.get(i), TokenType.consvar));
+                break;
+                case "newlist":
+                    res.add(tokens(spl.get(i), TokenType.newlist));
+                break;
+                case "uselist":
+                    res.add(tokens(spl.get(i), TokenType.uselist));
+                break;
+                case "mod":
+                    res.add(tokens(spl.get(i), TokenType.BinaryOperator));
+                break;
                 default:
                     try {
                         Integer.parseInt(spl.get(i));
@@ -195,6 +208,7 @@ public class Lexer {
         commands.put("sub", 2);
         commands.put("mul", 2);
         commands.put("div", 2);
+        commands.put("mod", 2);
         commands.put("var", 2);
         commands.put("allo", 2);
         commands.put("free", 1);
@@ -216,6 +230,9 @@ public class Lexer {
         commands.put("defun", 4);
         commands.put("return", 1);
         commands.put("[", -1);
+        commands.put("consvar", 2);
+        commands.put("newlist", 1);
+        commands.put("uselist", 1);
         if (lexedList.isEmpty()) {
             return null;
         }

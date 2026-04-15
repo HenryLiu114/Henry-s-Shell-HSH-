@@ -4,12 +4,12 @@
     /if /{/gteq /usevar i /usevar ntimes} 
         /{/print /concat /usevar s /concat /usevar a /concat /usevar space /usevar b}
         /{
-            /var t /var a,
+            /var t /usevar a,
             /var a /usevar b,
             /var b /add /usevar a /usevar t, 
             /var i /add /usevar i 1,
-            /print /usevar b,
-            /usefun fibo (/usevar a /usevar b /usevar ntimes /usevar i)
+            /newlist l, /consvar l a, /consvar l b, /consvar l ntimes, /consvar l i,
+            /usefun fibo l
         }
     /endif
 ]

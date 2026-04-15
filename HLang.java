@@ -64,9 +64,9 @@ public class HLang {
             LinkedList<String> sn = Lexer.interpreter(lex.parse(lex.tokenize(cur)));
             // System.out.println(cur);
             // System.out.println(arr.toString());
-            System.out.println("Interpreted String: " + sn.toString());
+            //System.out.println("Interpreted String: " + sn.toString());
             for (int j = 0; j < sn.size(); j++) {
-                // System.out.println("Stack: " + valStack.toString());
+                //System.out.println("Stack: " + valStack.toString());
                 switch (sn.get(j)) {
                     case "add":
                         int first;
@@ -89,6 +89,11 @@ public class HLang {
                         first = Integer.parseInt(valStack.pop());
                         second = Integer.parseInt(valStack.pop());
                         valStack.push("" + (first / second));
+                        break;
+                    case "mod":
+                        first = Integer.parseInt(valStack.pop());
+                        second = Integer.parseInt(valStack.pop());
+                        valStack.push("" + (first % second));
                         break;
                     case "var":
                         String f;
@@ -297,11 +302,11 @@ public class HLang {
                             }
                             k++;
                         }
-
+                        //System.out.println("Branch: "+Arrays.toString(branch));
                         compile(branch[2], varList, valStack, functionList);
                         String compare = valStack.pop();
                         if (compare.equals("T")) {
-                            // System.out.println(branch[1]);
+                            
                             compile(branch[1], varList, valStack, functionList);
 
                         } else {
@@ -381,9 +386,9 @@ public class HLang {
                         funCount++;
                         String[] arrrr = params.toArray(new String[0]);
                         HLangFunct funct = new HLangFunct(arrrr, fullcmd);
-                        System.out.println("Params: " + Arrays.toString(funct.getParam()));
-                        System.out.println("Commands: "+ funct.getCommands().toString());
-                        System.out.println("Funct Name: "+ functionName);
+                        //System.out.println("Params: " + Arrays.toString(funct.getParam()));
+                        //System.out.println("Commands: "+ funct.getCommands().toString());
+                        //System.out.println("Funct Name: "+ functionName);
                         functionList.put(functionName, funct);
                         break;
                     case "usefun":
@@ -399,6 +404,42 @@ public class HLang {
                         break;
                     case "return":
 
+                        break;
+                    case "newlist":
+                        String listName = valStack.pop();
+                        varList.put(listName, new LinkedList<>());
+                        break;
+                    case "uselist":
+                        listName = valStack.pop();
+                        String use = "(";
+                        LinkedList<String> listUse = varList.get(listName);
+                        for(int lu = 0; lu < listUse.size()-1; lu++){
+                            use += listUse.get(lu) + " ";
+                        }
+                        use += listUse.get(listUse.size()-1) + ")";
+                        valStack.push(use);
+                        break;
+                    case "len":
+
+                        break;
+                    case "car":
+                        
+                        break;
+                    case "cdr":
+                        
+                        break;
+                    case "consvar":
+                        listName = valStack.pop();
+                        String varName = valStack.pop();
+                        
+                        if(varList.get(varName).size() <= 1){
+                            varList.get(listName).add(varList.get(varName).get(0));
+                        }
+                        else{
+                            for(int ic = 0; i < varList.get(varName).size(); ic++){
+                                varList.get(listName).add(varList.get(varName).get(ic));
+                            }
+                        }
                         break;
                     default:
                         valStack.push(sn.get(j));
