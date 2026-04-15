@@ -1,6 +1,7 @@
 # Henry-s-Shell-HSH-
 A open source java based shell created by yours truly.
 
+<img width="226" height="223" alt="HLANG Logo" src="https://github.com/user-attachments/assets/5d40994f-85d1-48b2-9e74-548208422704" />
 This repo also comes in with a built in programming language called "HLANG" (Henry's Language).
 
 HLANG is a Functional Programming Language with imperative features. Inspired by languages like Lisp.
