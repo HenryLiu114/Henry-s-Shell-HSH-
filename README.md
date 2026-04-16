@@ -1,5 +1,4 @@
-# Henry-s-Shell-HSH-
-# Current HLANG Version 0.7
+# HLANG Version 0.7
 A open source java based shell created by yours truly.
 
 This repo also comes in with a built in programming language called "HLANG" (Henry's Language).
