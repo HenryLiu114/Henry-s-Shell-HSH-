@@ -1,4 +1,4 @@
 @echo off
 javac *.java
-java HLang %*
+java HSH %*
 removeclasses

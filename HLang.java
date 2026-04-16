@@ -1,16 +1,13 @@
-import java.util.Arrays;
-import java.util.EmptyStackException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Scanner;
 import java.util.Stack;
 
-import java.io.*;
-import java.util.Scanner;
-
 public class HLang {
-    public static void main(String[] args) throws FileNotFoundException {
-        Scanner fc = new Scanner(new File(args[0] + ".hlang"));
+    public static void runScript(String filepath) throws FileNotFoundException {
+        Scanner fc = new Scanner(new File(filepath + ".hlang"));
         Queue<String> commandQueue = new LinkedList<>();
         HashMap<String, LinkedList<String>> varList = new HashMap<>();
         HashMap<String, HLangFunct> functionList = new HashMap<>();
