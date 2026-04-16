@@ -22,7 +22,7 @@ public class HLang {
             String line = commandQueue.remove();
             while (line.charAt(line.length() - 1) != '.' && !commandQueue.isEmpty()) {
                 line += commandQueue.remove();
-                //System.out.println(line);
+                // System.out.println(line);
             }
             compile(line, varList, s, functionList);
         }
@@ -56,7 +56,8 @@ public class HLang {
         return res;
     }
 
-    public static void compile(String n, HashMap<String, LinkedList<String>> varList, Stack<String> valStack, HashMap<String, HLangFunct> functionList) {
+    public static void compile(String n, HashMap<String, LinkedList<String>> varList, Stack<String> valStack,
+            HashMap<String, HLangFunct> functionList) {
         Lexer lex = new Lexer();
         LinkedList<String> arr = splitPeriods(n);
         for (int i = 0; i < arr.size(); i++) {
@@ -66,7 +67,7 @@ public class HLang {
             // System.out.println(arr.toString());
             //System.out.println("Interpreted String: " + sn.toString());
             for (int j = 0; j < sn.size(); j++) {
-                //System.out.println("Stack: " + valStack.toString());
+                // System.out.println("Stack: " + valStack.toString());
                 switch (sn.get(j)) {
                     case "add":
                         int first;
@@ -302,14 +303,15 @@ public class HLang {
                             }
                             k++;
                         }
-                        //System.out.println("Branch: "+Arrays.toString(branch));
+                        //System.out.println("Branch: " + Arrays.toString(branch));
                         compile(branch[2], varList, valStack, functionList);
                         String compare = valStack.pop();
                         if (compare.equals("T")) {
-                            
+                            //System.out.println("True Branch");
                             compile(branch[1], varList, valStack, functionList);
 
                         } else {
+                            //System.out.println("False Branch");
                             compile(branch[0], varList, valStack, functionList);
                         }
                         j = k;
@@ -386,19 +388,19 @@ public class HLang {
                         funCount++;
                         String[] arrrr = params.toArray(new String[0]);
                         HLangFunct funct = new HLangFunct(arrrr, fullcmd);
-                        //System.out.println("Params: " + Arrays.toString(funct.getParam()));
-                        //System.out.println("Commands: "+ funct.getCommands().toString());
-                        //System.out.println("Funct Name: "+ functionName);
+                        // System.out.println("Params: " + Arrays.toString(funct.getParam()));
+                        // System.out.println("Commands: "+ funct.getCommands().toString());
+                        // System.out.println("Funct Name: "+ functionName);
                         functionList.put(functionName, funct);
                         break;
                     case "usefun":
-                        int counter = j+1;
+                        int counter = j + 1;
                         String funcName = sn.get(counter);
                         counter++;
                         String lis = sn.get(counter);
                         counter++;
-                        //System.out.println(funcName);
-                        //System.out.println(functionList.containsKey(funcName));
+                        // System.out.println(funcName);
+                        // System.out.println(functionList.containsKey(funcName));
                         functionList.get(funcName).useFunction(lis, varList, valStack, functionList);
                         j = counter;
                         break;
@@ -413,32 +415,66 @@ public class HLang {
                         listName = valStack.pop();
                         String use = "(";
                         LinkedList<String> listUse = varList.get(listName);
-                        for(int lu = 0; lu < listUse.size()-1; lu++){
+                        for (int lu = 0; lu < listUse.size() - 1; lu++) {
                             use += listUse.get(lu) + " ";
                         }
-                        use += listUse.get(listUse.size()-1) + ")";
+                        use += listUse.get(listUse.size() - 1) + ")";
                         valStack.push(use);
                         break;
-                    case "len":
-
-                        break;
                     case "car":
-                        
+                        String headPop = valStack.pop();
+                        String head = varList.get(headPop).get(0);
+                        valStack.push(head);
                         break;
                     case "cdr":
-                        
+                        String tailPop = valStack.pop();
+                        varList.get(tailPop).removeFirst();
+                        valStack.push(tailPop);
                         break;
                     case "consvar":
                         listName = valStack.pop();
                         String varName = valStack.pop();
-                        
-                        if(varList.get(varName).size() <= 1){
+                        if (varList.get(varName).size() == 1) {
                             varList.get(listName).add(varList.get(varName).get(0));
-                        }
-                        else{
-                            for(int ic = 0; i < varList.get(varName).size(); ic++){
+                        } else {
+                            for (int ic = 0; i < varList.get(varName).size(); ic++) {
                                 varList.get(listName).add(varList.get(varName).get(ic));
                             }
+                        }
+                        break;
+                    case "split":
+                        listName = valStack.pop();
+                        String regex = valStack.pop();
+                        String useVariable = varList.get(listName).get(0);
+                        String[] split = useVariable.split(regex);
+                        varList.get(listName).clear();
+                        for (int bm = 0; bm < split.length; bm++) {
+                            varList.get(listName).add(split[bm]);
+                        }
+                        break;
+                    case "desplit":
+                        listName = valStack.pop();
+                        regex = valStack.pop();
+                        LinkedList<String> temporary = varList.get(listName);
+                        String output = "";
+                        if (temporary.size() > 0) {
+                            for (int bm = 0; bm < temporary.size() - 1; bm++) {
+                                output += temporary.get(bm) + regex;
+                            }
+                            output += temporary.get(temporary.size() - 1);
+                            varList.get(listName).clear();
+                            varList.get(listName).add(output);
+                        }
+                        else{
+                            varList.get(listName).add("?");
+                        }
+                        break;
+                    case "null":
+                        listName = valStack.pop();
+                        if (varList.get(listName).size() == 1 && varList.get(listName).get(0).equals("?")) {
+                            valStack.push("T");
+                        } else {
+                            valStack.push("NIL");
                         }
                         break;
                     default:

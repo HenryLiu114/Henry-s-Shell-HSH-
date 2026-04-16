@@ -1,0 +1,5 @@
+/var l 2-3.
+/var x 5.
+/split l -.
+/var x /add 5 /car l.
+/print /usevar x.

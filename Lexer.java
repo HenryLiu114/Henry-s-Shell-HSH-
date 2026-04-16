@@ -17,7 +17,7 @@ public class Lexer {
         ProgNLB, ProgNRB, ProgNSplitter,
         Conditional,
         FunctionDefinition, FunctionUse, FunctionEnd, FunctionReturn, FunctionParam, FunctionSProgs, FunctionEProgs, FunctionSplitter,
-        consvar, newlist, uselist;
+        consvar, newlist, uselist, nullChar;
     }
 
     public class Token {
@@ -184,9 +184,27 @@ public class Lexer {
                 case "uselist":
                     res.add(tokens(spl.get(i), TokenType.uselist));
                 break;
+                case "split":
+                    res.add(tokens(spl.get(i), TokenType.newlist));
+                break;
+                case "desplit":
+                    res.add(tokens(spl.get(i), TokenType.newlist));
+                break;
+                case "car":
+                    res.add(tokens(spl.get(i), TokenType.newlist));
+                break;
+                case "cdr":
+                    res.add(tokens(spl.get(i), TokenType.newlist));
+                break;
+                case "null":
+                    res.add(tokens(spl.get(i), TokenType.Conditional));
+                break;
                 case "mod":
                     res.add(tokens(spl.get(i), TokenType.BinaryOperator));
                 break;
+                case "?":
+                    res.add(tokens(spl.get(i), TokenType.nullChar));
+                    break;
                 default:
                     try {
                         Integer.parseInt(spl.get(i));
@@ -233,6 +251,11 @@ public class Lexer {
         commands.put("consvar", 2);
         commands.put("newlist", 1);
         commands.put("uselist", 1);
+        commands.put("split", 2);
+        commands.put("desplit", 2);
+        commands.put("car", 1);
+        commands.put("cdr", 1);
+        commands.put("null", 1);
         if (lexedList.isEmpty()) {
             return null;
         }

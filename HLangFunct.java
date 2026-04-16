@@ -37,8 +37,9 @@ public class HLangFunct {
     }
 
     public void useFunction(String paramList, HashMap<String, LinkedList<String>> varList, Stack<String> valStack, HashMap<String, HLangFunct> functionList){
+        //System.out.println(paramList);
         String str = "";
-        if(paramList.contains("(") && paramList.contains("(")){
+        if(paramList.charAt(0) == '(' && paramList.charAt(paramList.length()-1) == ')'){
             str = paramList.substring(1, paramList.length()-1);
         }
         else{
@@ -56,9 +57,11 @@ public class HLangFunct {
             String temp = param[i].substring(0, param[i].length()-1);
             HLang.compile(temp + input[i] + ".", varList, valStack, functionList);
         }
+        //System.out.println(commands);
         for(int i = 0; i < commands.size(); i++){
-            HLang.compile(commands.get(i), varList,  valStack, functionList);
             //System.out.println("Executed: "+commands.get(i));
+            HLang.compile(commands.get(i), varList,  valStack, functionList);
+            
         }
     }
 }

@@ -1,0 +1,17 @@
+/defun listsum /[/var l; /var x] /[
+    /if /{/null l} 
+        /{/print /usevar x}
+        /{
+            /split l -,
+            /var x /add usevar x /car l,
+            /cdr l,
+            /desplit l -,
+            /newlist l1,
+            /consvar l1 l,
+            /consvar l1 x,
+            /usefun listsum l1
+        }
+    /endif
+]
+/endfun.
+/usefun listsum (1-2-3-4-5-6-7-8 0).
