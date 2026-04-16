@@ -7,8 +7,8 @@ This repo also comes in with a built in programming language called "HLANG" (Hen
 
 HLANG is a Functional Programming Language with imperative features. Inspired by languages like Lisp.
 
-At the moment, you can only run scripts for HLANG, using the command:
-| hsh <FileName<e>> |
+To open the shell type:
+| hsh  |
 |-------------------|
 
 Full Documentation here: https://docs.google.com/document/d/1nvqojG-Cqz98_qCI_f7FaMuBhDlZQEZE8lbDCH_kHAc/edit?usp=sharing
