@@ -38,6 +38,7 @@ Full Documentation here: https://docs.google.com/document/d/1nvqojG-Cqz98_qCI_f7
 # Planned Updates:
 | HLANG Version | Date | Changes |
 |---------|------|---------|
-| v1.1 | Apr 20, 2026 | IO Stream: /prompt, /scan, and /write. |
-| v1.2 | May 18, 2026 | Loops: /while, /for. |
+| v1.2 | Sometime soon | Imports + HSH java functionality (For those who dont want to learn HLang) |
+| v? | Maybe, Maybe Not | IO Stream: /prompt, /scan, and /write. |
+| v? | Maybe, Maybe Not | Loops: /while, /for. |
 
