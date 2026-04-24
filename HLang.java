@@ -67,31 +67,46 @@ public class HLang {
                 // System.out.println("Stack: " + valStack.toString());
                 switch (sn.get(j)) {
                     case "add":
-                        int first;
-                        int second;
-                        first = Integer.parseInt(valStack.pop());
-                        second = Integer.parseInt(valStack.pop());
+                        double first;
+                        double second;
+                        first = Double.parseDouble(valStack.pop());
+                        second = Double.parseDouble(valStack.pop());
                         valStack.push("" + (first + second));
                         break;
                     case "sub":
-                        first = Integer.parseInt(valStack.pop());
-                        second = Integer.parseInt(valStack.pop());
+                        first = Double.parseDouble(valStack.pop());
+                        second = Double.parseDouble(valStack.pop());
                         valStack.push("" + (first - second));
                         break;
                     case "mul":
-                        first = Integer.parseInt(valStack.pop());
-                        second = Integer.parseInt(valStack.pop());
+                        first = Double.parseDouble(valStack.pop());
+                        second = Double.parseDouble(valStack.pop());
                         valStack.push("" + (first * second));
                         break;
                     case "div":
-                        first = Integer.parseInt(valStack.pop());
-                        second = Integer.parseInt(valStack.pop());
+                        first = Double.parseDouble(valStack.pop());
+                        second = Double.parseDouble(valStack.pop());
                         valStack.push("" + (first / second));
                         break;
                     case "mod":
-                        first = Integer.parseInt(valStack.pop());
-                        second = Integer.parseInt(valStack.pop());
+                        first = Double.parseDouble(valStack.pop());
+                        second = Double.parseDouble(valStack.pop());
                         valStack.push("" + (first % second));
+                        break;
+                    case "pow":
+                        first = Double.parseDouble(valStack.pop());
+                        second = Double.parseDouble(valStack.pop());
+                        valStack.push("" + (first % second));
+                        valStack.push("" + Math.pow(first, second));
+                        break;
+                    case "root":
+                        first = Double.parseDouble(valStack.pop());
+                        second = Double.parseDouble(valStack.pop());
+                        valStack.push("" + Math.pow(first, (double) 1/second));
+                        break;
+                    case "int":
+                        first = Double.parseDouble(valStack.pop());
+                        valStack.push("" + (int) first);
                         break;
                     case "var":
                         String f;
@@ -138,7 +153,7 @@ public class HLang {
                         f = valStack.pop();
                         s = valStack.pop();
                         try {
-                            if (Integer.parseInt(f) == Integer.parseInt(s)) {
+                            if (Double.parseDouble(f) == Double.parseDouble(s)) {
                                 valStack.push("T");
                             } else {
                                 valStack.push("NIL");
@@ -155,7 +170,7 @@ public class HLang {
                         f = valStack.pop();
                         s = valStack.pop();
                         try {
-                            if (Integer.parseInt(f) <= Integer.parseInt(s)) {
+                            if (Double.parseDouble(f) <= Double.parseDouble(s)) {
                                 valStack.push("T");
                             } else {
                                 valStack.push("NIL");
@@ -172,7 +187,7 @@ public class HLang {
                         f = valStack.pop();
                         s = valStack.pop();
                         try {
-                            if (Integer.parseInt(f) < Integer.parseInt(s)) {
+                            if (Double.parseDouble(f) < Double.parseDouble(s)) {
                                 valStack.push("T");
                             } else {
                                 valStack.push("NIL");
@@ -189,7 +204,7 @@ public class HLang {
                         f = valStack.pop();
                         s = valStack.pop();
                         try {
-                            if (Integer.parseInt(f) >= Integer.parseInt(s)) {
+                            if (Double.parseDouble(f) >= Double.parseDouble(s)) {
                                 valStack.push("T");
                             } else {
                                 valStack.push("NIL");
@@ -206,7 +221,7 @@ public class HLang {
                         f = valStack.pop();
                         s = valStack.pop();
                         try {
-                            if (Integer.parseInt(f) > Integer.parseInt(s)) {
+                            if (Double.parseDouble(f) > Double.parseDouble(s)) {
                                 valStack.push("T");
                             } else {
                                 valStack.push("NIL");

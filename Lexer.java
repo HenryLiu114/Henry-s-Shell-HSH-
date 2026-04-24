@@ -113,6 +113,7 @@ public class Lexer {
                 case "sub":
                 case "mul":
                 case "div":
+                case "int":
                     res.add(tokens(spl.get(i), TokenType.BinaryOperator));
                     break;
                 case "var":
@@ -202,6 +203,12 @@ public class Lexer {
                 case "mod":
                     res.add(tokens(spl.get(i), TokenType.BinaryOperator));
                 break;
+                case "root":
+                    res.add(tokens(spl.get(i), TokenType.BinaryOperator));
+                break;
+                case "pow":
+                    res.add(tokens(spl.get(i), TokenType.BinaryOperator));
+                break;
                 case "?":
                     res.add(tokens(spl.get(i), TokenType.nullChar));
                     break;
@@ -227,6 +234,8 @@ public class Lexer {
         commands.put("mul", 2);
         commands.put("div", 2);
         commands.put("mod", 2);
+        commands.put("root", 2);
+        commands.put("pow", 2);
         commands.put("var", 2);
         commands.put("allo", 2);
         commands.put("free", 1);
@@ -256,6 +265,7 @@ public class Lexer {
         commands.put("car", 1);
         commands.put("cdr", 1);
         commands.put("null", 1);
+        commands.put("int", 1);
         if (lexedList.isEmpty()) {
             return null;
         }
