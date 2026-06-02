@@ -1,10 +1,9 @@
-# HLANG/HSh Version 1.1
+# HLANG/HSh Version 2.0 Alpha
 A open source java based shell created by yours truly.
 
 This repo also comes in with a built in programming language called "HLANG" (Henry's Language).
 
 <img width="320" height="166" alt="Frame 1" src="https://github.com/user-attachments/assets/4dfbf453-ac35-4b8e-9491-939a78e6d0c3" />
-
 
 HLANG is a Functional Programming Language with imperative features. Inspired by languages like Lisp.
 
@@ -12,15 +11,36 @@ This repo will have a built in shell called "HSh" or Henry's Shell for short.
 
 <img width="202" height="151" alt="Frame 2" src="https://github.com/user-attachments/assets/5e4c374d-422e-4d8a-865e-76b2b57d401d" />
 
-To open the shell type:
+HLANG 2.0 is currently being built right now. The older version is in a different directory.
+
+# Note To Users:
+Hello,
+
+This Project is currently being remastered to a more efficent design and system. The 2.0 version is being built still in java, but will take
+use of enums and typing instead of hardcoding everything to one type. I have decided to do this simply because maintaining new updates to 1.1
+was impossiable due to my spagehtti coding.
+
+I promise the following for this new 2.0 version:
+- Better Effeciency
+- Less Hardcoding
+- Actual Data Types
+- Input management
+- Cleaner Lists
+- Easier to read
+- Removal of unnessisary commands (/usevar, /concat, etc.)
+
+Thank You for Understanding,
+Henry
+
+
+To open the shell type (1.1 ONLY):
 | hsh  |
 |-------------------|
-
-Full Documentation here: https://docs.google.com/document/d/1nvqojG-Cqz98_qCI_f7FaMuBhDlZQEZE8lbDCH_kHAc/edit?usp=sharing
 
 # HLANG/HSh Changlog:
 | HLANG/HSh Version | Date | Changes |
 |---------|------|---------|
+| v2.0a | June 6, 2026 | Began rebuilding the lanaguage from scratch. |
 | v1.1 | Apr 15, 2026 | Build the H Shell that can take HLANG Code and custom commands. |
 | v1.0 | Apr 15, 2026 | List Operations: /cdr, /cons, /null, and ? (nullvalue). |
 | v0.6 | Apr 14, 2026 | List Recursion Works, and added some basic list commands: /newlist, /consvar, /uselist. Recursion now takes in either a preset list () or a list variable /newlist. |
@@ -35,10 +55,10 @@ Full Documentation here: https://docs.google.com/document/d/1nvqojG-Cqz98_qCI_f7
 | v0 | Mar 25, 2026 | Early Version of HSh was developed. |
 | v0 | Mar 24, 2026 | Date of Repo Creation. |
 
-# Planned Updates:
-| HLANG Version | Date | Changes |
+# Future Plans:
+| HLANG/HSh Version | Date | Changes |
 |---------|------|---------|
-| v1.2 | Sometime soon | Imports + HSH java functionality (For those who dont want to learn HLang) |
-| v? | Maybe, Maybe Not | IO Stream: /prompt, /scan, and /write. |
-| v? | Maybe, Maybe Not | Loops: /while, /for. |
-
+| v2.0b | SOON | Rebuild all functionality from HLANG 1.1. |
+| v2.0 | SOON | Terminal + Download. |
+| Web1.0 | SOON | Online Compiler + Website |
+| Web1.1 | SOON | Offical Manual |
