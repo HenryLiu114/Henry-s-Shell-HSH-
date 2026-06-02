@@ -1,4 +1,5 @@
 import java.io.EOFException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Stack;
@@ -15,6 +16,8 @@ public class HLANG {
         vardec,
         conditional,
         ifstmt,
+        prog,
+        attribute,
         function,
         output,
         // Data Types
@@ -42,6 +45,8 @@ public class HLANG {
     private static LinkedList<Token<?>> Lexer(String cmd) throws Exception {
         boolean isString = false;
         boolean isFinished = false;
+        int progCount = 0;
+        boolean attribute = false;
         String cur = "";
         LinkedList<String> strList = new LinkedList<>();
         LinkedList<Token<?>> lexedList = new LinkedList<>();
@@ -49,12 +54,37 @@ public class HLANG {
         // Custom Split
         while (i < cmd.length() && !isFinished) {
             char curChar = cmd.charAt(i);
+            // System.out.println("Cur: " + cur);
             if (isString) {
                 if (curChar == '"') {
                     cur += curChar;
                     isString = !isString;
                 } else {
                     cur += curChar;
+                }
+            } else if (progCount > 0) {
+                cur += curChar;
+
+                if (curChar == '{') {
+                    progCount++;
+                } else if (curChar == '}') {
+                    progCount--;
+
+                    if (progCount == 0) {
+                        strList.add(cur);
+                        cur = "";
+                    }
+                } else if (curChar == '"') {
+                    isString = !isString;
+                }
+            } else if (attribute) {
+                cur += curChar;
+                if (curChar == ')') {
+                    attribute = false;
+                    strList.add(cur);
+                    cur = "";
+                } else if (curChar == '"') {
+                    isString = !isString;
                 }
             } else {
                 switch (curChar) {
@@ -63,6 +93,14 @@ public class HLANG {
                             strList.add(cur);
                         }
                         cur = "";
+                        break;
+                    case '{':
+                        cur += curChar;
+                        progCount++;
+                        break;
+                    case '(':
+                        cur += curChar;
+                        attribute = true;
                         break;
                     case '.':
                         if (cur.length() != 0) {
@@ -107,12 +145,19 @@ public class HLANG {
                     case "/not":
                         lexedList.add(new Token<String>(curStr, TokenType.logicalnot));
                         break;
+                    case "/if":
+                        lexedList.add(new Token<String>(curStr, TokenType.ifstmt));
+                        break;
                     default:
                         lexedList.add(new Token<String>(curStr, TokenType.var));
                         break;
                 }
             } else if (curStr.charAt(0) == '"') {
-                lexedList.add(new Token<String>(curStr.substring(1,curStr.length()-1), TokenType.str));
+                lexedList.add(new Token<String>(curStr.substring(1, curStr.length() - 1), TokenType.str));
+            } else if (curStr.charAt(0) == '(') {
+                lexedList.add(new Token<String>(curStr.substring(1, curStr.length() - 1), TokenType.attribute));
+            } else if (curStr.charAt(0) == '{') {
+                lexedList.add(new Token<String>(curStr.substring(1, curStr.length() - 1), TokenType.prog));
             } else {
                 if (curStr.contains(".")) {
                     try {
@@ -155,14 +200,14 @@ public class HLANG {
         TreeNode curNode = new TreeNode(cur);
         int childrenCount = 0;
         switch (cur.type) {
-            case TokenType.arithmetic, TokenType.vardec, TokenType.logical, TokenType.conditional:
+            case TokenType.arithmetic, TokenType.vardec, TokenType.logical, TokenType.conditional, TokenType.function:
                 childrenCount = 2;
                 break;
             case TokenType.singleArith, TokenType.logicalnot, TokenType.output:
                 childrenCount = 1;
                 break;
-            case TokenType.ifstmt, TokenType.function:
-                childrenCount = -1;
+            case TokenType.ifstmt:
+                childrenCount = 3;
                 break;
             default:
                 childrenCount = 0;
@@ -203,14 +248,15 @@ public class HLANG {
         return res;
     }
 
-    private static void SingleLineCompiler(String cmd, HashMap<String,Token<?>> variables) throws Exception {
+    private static void SingleLineCompiler(String cmd, HashMap<String, Token<?>> variables, Stack<Token<?>> ValStack)
+            throws Exception {
         LinkedList<Token<?>> interpret = Interpreter(Parser(Lexer(cmd)));
-        //System.out.println(interpret);
-        Stack<Token<?>> ValStack = new Stack<>();
+        //System.out.println("Interpeted String: " + interpret);
         while (!interpret.isEmpty()) {
             Token<?> cur = interpret.remove();
             switch (cur.type) {
-                case TokenType.integer, TokenType.floating, TokenType.str, TokenType.bool, TokenType.varname:
+                case TokenType.integer, TokenType.floating, TokenType.str, TokenType.bool, TokenType.varname,
+                        TokenType.prog, TokenType.attribute:
                     ValStack.push(cur);
                     break;
                 case TokenType.arithmetic:
@@ -223,64 +269,52 @@ public class HLANG {
                                 int v2 = (Integer) X2.data;
 
                                 ValStack.push(new Token<>(v1 + v2, TokenType.integer));
-                            } 
-                            else if (X1.type == TokenType.integer && X2.type == TokenType.floating) {
+                            } else if (X1.type == TokenType.integer && X2.type == TokenType.floating) {
                                 int v1 = (Integer) X1.data;
                                 double v2 = (Double) X2.data;
 
                                 ValStack.push(new Token<>(v1 + v2, TokenType.floating));
-                            } 
-                            else if (X1.type == TokenType.floating && X2.type == TokenType.integer) {
+                            } else if (X1.type == TokenType.floating && X2.type == TokenType.integer) {
                                 double v1 = (Double) X1.data;
                                 int v2 = (Integer) X2.data;
 
                                 ValStack.push(new Token<>(v1 + v2, TokenType.floating));
-                            } 
-                            else if (X1.type == TokenType.floating && X2.type == TokenType.floating) {
+                            } else if (X1.type == TokenType.floating && X2.type == TokenType.floating) {
                                 double v1 = (Double) X1.data;
                                 double v2 = (Double) X2.data;
 
                                 ValStack.push(new Token<>(v1 + v2, TokenType.floating));
-                            } 
-                            else if(X1.type == TokenType.str){
+                            } else if (X1.type == TokenType.str) {
                                 String v1 = (String) X1.data;
-                                if(X2.type == TokenType.str){
+                                if (X2.type == TokenType.str) {
                                     String v2 = (String) X2.data;
                                     ValStack.push(new Token<>(v2 + v1, TokenType.str));
-                                }
-                                else if (X2.type == TokenType.integer){
+                                } else if (X2.type == TokenType.integer) {
                                     int v2 = (Integer) X2.data;
                                     ValStack.push(new Token<>(v2 + v1, TokenType.str));
-                                }
-                                else if (X2.type == TokenType.floating){
+                                } else if (X2.type == TokenType.floating) {
                                     double v2 = (Double) X2.data;
                                     ValStack.push(new Token<>(v2 + v1, TokenType.str));
-                                }
-                                else if (X2.type == TokenType.bool) {
+                                } else if (X2.type == TokenType.bool) {
                                     boolean v2 = (Boolean) X2.data;
                                     ValStack.push(new Token<>(v2 + v1, TokenType.str));
                                 }
-                            }
-                            else if(X2.type == TokenType.str){
+                            } else if (X2.type == TokenType.str) {
                                 String v2 = (String) X2.data;
-                                if(X1.type == TokenType.str){
+                                if (X1.type == TokenType.str) {
                                     String v1 = (String) X1.data;
                                     ValStack.push(new Token<>(v2 + v1, TokenType.str));
-                                }
-                                else if (X1.type == TokenType.integer){
+                                } else if (X1.type == TokenType.integer) {
                                     int v1 = (Integer) X1.data;
                                     ValStack.push(new Token<>(v2 + v1, TokenType.str));
-                                }
-                                else if (X1.type == TokenType.floating){
+                                } else if (X1.type == TokenType.floating) {
                                     double v1 = (Double) X1.data;
                                     ValStack.push(new Token<>(v2 + v1, TokenType.str));
-                                }
-                                else if (X1.type == TokenType.bool) {
+                                } else if (X1.type == TokenType.bool) {
                                     boolean v1 = (Boolean) X1.data;
-                                    ValStack.push(new Token<>(v2 + v1       , TokenType.str));
+                                    ValStack.push(new Token<>(v2 + v1, TokenType.str));
                                 }
-                            }
-                            else {
+                            } else {
                                 throw new Exception("Cannot Compile: Addition Type Error!");
                             }
                             break;
@@ -292,26 +326,22 @@ public class HLANG {
                                 int v2 = (Integer) X2.data;
 
                                 ValStack.push(new Token<>(v1 - v2, TokenType.integer));
-                            } 
-                            else if (X1.type == TokenType.integer && X2.type == TokenType.floating) {
+                            } else if (X1.type == TokenType.integer && X2.type == TokenType.floating) {
                                 int v1 = (Integer) X1.data;
                                 double v2 = (Double) X2.data;
 
                                 ValStack.push(new Token<>(v1 - v2, TokenType.floating));
-                            } 
-                            else if (X1.type == TokenType.floating && X2.type == TokenType.integer) {
+                            } else if (X1.type == TokenType.floating && X2.type == TokenType.integer) {
                                 double v1 = (Double) X1.data;
                                 int v2 = (Integer) X2.data;
 
                                 ValStack.push(new Token<>(v1 - v2, TokenType.floating));
-                            } 
-                            else if (X1.type == TokenType.floating && X2.type == TokenType.floating) {
+                            } else if (X1.type == TokenType.floating && X2.type == TokenType.floating) {
                                 double v1 = (Double) X1.data;
                                 double v2 = (Double) X2.data;
 
                                 ValStack.push(new Token<>(v1 - v2, TokenType.floating));
-                            } 
-                            else {
+                            } else {
                                 throw new Exception("Cannot Compile: Subtraction Type Error!");
                             }
                             break;
@@ -323,26 +353,22 @@ public class HLANG {
                                 int v2 = (Integer) X2.data;
 
                                 ValStack.push(new Token<>(v1 * v2, TokenType.integer));
-                            } 
-                            else if (X1.type == TokenType.integer && X2.type == TokenType.floating) {
+                            } else if (X1.type == TokenType.integer && X2.type == TokenType.floating) {
                                 int v1 = (Integer) X1.data;
                                 double v2 = (Double) X2.data;
 
                                 ValStack.push(new Token<>(v1 * v2, TokenType.floating));
-                            } 
-                            else if (X1.type == TokenType.floating && X2.type == TokenType.integer) {
+                            } else if (X1.type == TokenType.floating && X2.type == TokenType.integer) {
                                 double v1 = (Double) X1.data;
                                 int v2 = (Integer) X2.data;
 
                                 ValStack.push(new Token<>(v1 * v2, TokenType.floating));
-                            } 
-                            else if (X1.type == TokenType.floating && X2.type == TokenType.floating) {
+                            } else if (X1.type == TokenType.floating && X2.type == TokenType.floating) {
                                 double v1 = (Double) X1.data;
                                 double v2 = (Double) X2.data;
 
                                 ValStack.push(new Token<>(v1 * v2, TokenType.floating));
-                            } 
-                            else {
+                            } else {
                                 throw new Exception("Cannot Compile: Multiplication Type Error!");
                             }
                             break;
@@ -354,26 +380,22 @@ public class HLANG {
                                 int v2 = (Integer) X2.data;
 
                                 ValStack.push(new Token<>(v1 / v2, TokenType.integer));
-                            } 
-                            else if (X1.type == TokenType.integer && X2.type == TokenType.floating) {
+                            } else if (X1.type == TokenType.integer && X2.type == TokenType.floating) {
                                 int v1 = (Integer) X1.data;
                                 double v2 = (Double) X2.data;
 
                                 ValStack.push(new Token<>(v1 / v2, TokenType.floating));
-                            } 
-                            else if (X1.type == TokenType.floating && X2.type == TokenType.integer) {
+                            } else if (X1.type == TokenType.floating && X2.type == TokenType.integer) {
                                 double v1 = (Double) X1.data;
                                 int v2 = (Integer) X2.data;
 
                                 ValStack.push(new Token<>(v1 / v2, TokenType.floating));
-                            } 
-                            else if (X1.type == TokenType.floating && X2.type == TokenType.floating) {
+                            } else if (X1.type == TokenType.floating && X2.type == TokenType.floating) {
                                 double v1 = (Double) X1.data;
                                 double v2 = (Double) X2.data;
 
                                 ValStack.push(new Token<>(v1 / v2, TokenType.floating));
-                            } 
-                            else {
+                            } else {
                                 throw new Exception("Cannot Compile: Division Type Error!");
                             }
                             break;
@@ -385,8 +407,7 @@ public class HLANG {
                                 int v2 = (Integer) X2.data;
 
                                 ValStack.push(new Token<>(v1 % v2, TokenType.integer));
-                            } 
-                            else {
+                            } else {
                                 throw new Exception("Cannot Compile: Modulus Type Error!");
                             }
                             break;
@@ -398,28 +419,23 @@ public class HLANG {
                                 int v2 = (Integer) X2.data;
 
                                 ValStack.push(new Token<>(Math.pow(v1, v2), TokenType.floating));
-                            } 
-                            else if (X1.type == TokenType.integer && X2.type == TokenType.floating) {
+                            } else if (X1.type == TokenType.integer && X2.type == TokenType.floating) {
                                 int v1 = (Integer) X1.data;
                                 double v2 = (Double) X2.data;
 
                                 ValStack.push(new Token<>(Math.pow(v1, v2), TokenType.floating));
-                            } 
-                            else if (X1.type == TokenType.floating && X2.type == TokenType.integer) {
+                            } else if (X1.type == TokenType.floating && X2.type == TokenType.integer) {
                                 double v1 = (Double) X1.data;
                                 int v2 = (Integer) X2.data;
 
                                 ValStack.push(new Token<>(Math.pow(v1, v2), TokenType.floating));
 
-                                
-                            } 
-                            else if (X1.type == TokenType.floating && X2.type == TokenType.floating) {
+                            } else if (X1.type == TokenType.floating && X2.type == TokenType.floating) {
                                 double v1 = (Double) X1.data;
                                 double v2 = (Double) X2.data;
-                                
+
                                 ValStack.push(new Token<>(Math.pow(v1, v2), TokenType.floating));
-                            } 
-                            else {
+                            } else {
                                 throw new Exception("Cannot Compile: Exponent Type Error!");
                             }
                             break;
@@ -431,15 +447,13 @@ public class HLANG {
                     switch ((String) cur.data) {
                         case "/abs":
                             Token<?> X = ValStack.pop();
-                            if (X.type == TokenType.integer){
+                            if (X.type == TokenType.integer) {
                                 int v = (Integer) X.data;
                                 ValStack.push(new Token<>(Math.abs(v), TokenType.floating));
-                            }
-                            else if(X.type == TokenType.floating){
+                            } else if (X.type == TokenType.floating) {
                                 double v = (Double) X.data;
                                 ValStack.push(new Token<>(Math.abs(v), TokenType.floating));
-                            }
-                            else {
+                            } else {
                                 throw new Exception("Cannot Compile: Addition Type Error!");
                             }
                             break;
@@ -460,14 +474,13 @@ public class HLANG {
                     }
                     break;
                 case TokenType.vardec:
-                    switch((String) cur.data){
+                    switch ((String) cur.data) {
                         case "/var":
                             Token<?> variable = ValStack.pop();
                             Token<?> dat = ValStack.pop();
-                            if(variable.type == TokenType.varname){
+                            if (variable.type == TokenType.varname) {
                                 variables.put((String) variable.data, dat);
-                            }
-                            else{
+                            } else {
                                 throw new Exception("Cannot Compile: Invaild Variable Name!");
                             }
                             break;
@@ -477,7 +490,7 @@ public class HLANG {
                     break;
                 case TokenType.var:
                     String varName = ((String) cur.data).substring(1);
-                    if(variables.containsKey(varName)){
+                    if (variables.containsKey(varName)) {
                         ValStack.push(variables.get(varName));
                     }
                     break;
@@ -486,20 +499,18 @@ public class HLANG {
                         case "/and":
                             Token<?> X2 = ValStack.pop();
                             Token<?> X1 = ValStack.pop();
-                            if(X1.type == TokenType.bool && X2.type == TokenType.bool){
+                            if (X1.type == TokenType.bool && X2.type == TokenType.bool) {
                                 ValStack.push(new Token<>(((Boolean) X1.data) && ((Boolean) X2.data), TokenType.bool));
-                            }
-                            else{
+                            } else {
                                 throw new Exception("Not a bool type.");
                             }
                             break;
                         case "/or":
                             X2 = ValStack.pop();
                             X1 = ValStack.pop();
-                            if(X1.type == TokenType.bool && X2.type == TokenType.bool){
+                            if (X1.type == TokenType.bool && X2.type == TokenType.bool) {
                                 ValStack.push(new Token<>(((Boolean) X1.data) || ((Boolean) X2.data), TokenType.bool));
-                            }
-                            else{
+                            } else {
                                 throw new Exception("Not a bool type.");
                             }
                             break;
@@ -511,10 +522,9 @@ public class HLANG {
                     switch ((String) cur.data) {
                         case "/not":
                             Token<?> X = ValStack.pop();
-                            if(X.type == TokenType.bool){
+                            if (X.type == TokenType.bool) {
                                 ValStack.push(new Token<>(!((Boolean) X.data), TokenType.bool));
-                            }
-                            else{
+                            } else {
                                 throw new Exception("Not a bool type.");
                             }
                             break;
@@ -528,42 +538,35 @@ public class HLANG {
                             Token<?> X1 = ValStack.pop();
                             Token<?> X2 = ValStack.pop();
 
-                            if(X1.type == X2.type){
-                                if(X1.type == TokenType.integer){
+                            if (X1.type == X2.type) {
+                                if (X1.type == TokenType.integer) {
                                     int v1 = (Integer) X1.data;
                                     int v2 = (Integer) X2.data;
-                                    if(v1 >= v2){
+                                    if (v1 >= v2) {
                                         ValStack.push(new Token<>(true, TokenType.bool));
-                                    }
-                                    else{
+                                    } else {
                                         ValStack.push(new Token<>(false, TokenType.bool));
                                     }
-                                }
-                                else if(X1.type == TokenType.floating){
+                                } else if (X1.type == TokenType.floating) {
                                     double v1 = (Double) X1.data;
                                     double v2 = (Double) X2.data;
-                                    if(v1 >= v2){
+                                    if (v1 >= v2) {
                                         ValStack.push(new Token<>(true, TokenType.bool));
-                                    }
-                                    else{
+                                    } else {
                                         ValStack.push(new Token<>(false, TokenType.bool));
                                     }
-                                }
-                                else if (X1.type == TokenType.str){
+                                } else if (X1.type == TokenType.str) {
                                     String v1 = (String) X1.data;
                                     String v2 = (String) X2.data;
-                                    if(v1.compareTo(v2) >= 0){
+                                    if (v1.compareTo(v2) >= 0) {
                                         ValStack.push(new Token<>(true, TokenType.bool));
-                                    }
-                                    else{
+                                    } else {
                                         ValStack.push(new Token<>(false, TokenType.bool));
                                     }
-                                }
-                                else{
+                                } else {
                                     throw new Exception("Cannot compare /gteq with bools.");
                                 }
-                            }
-                            else{
+                            } else {
                                 throw new Exception("Type mismatch. Can only compare two values of the same type.");
                             }
                             break;
@@ -571,42 +574,35 @@ public class HLANG {
                             X1 = ValStack.pop();
                             X2 = ValStack.pop();
 
-                            if(X1.type == X2.type){
-                                if(X1.type == TokenType.integer){
+                            if (X1.type == X2.type) {
+                                if (X1.type == TokenType.integer) {
                                     int v1 = (Integer) X1.data;
                                     int v2 = (Integer) X2.data;
-                                    if(v1 > v2){
+                                    if (v1 > v2) {
                                         ValStack.push(new Token<>(true, TokenType.bool));
-                                    }
-                                    else{
+                                    } else {
                                         ValStack.push(new Token<>(false, TokenType.bool));
                                     }
-                                }
-                                else if(X1.type == TokenType.floating){
+                                } else if (X1.type == TokenType.floating) {
                                     double v1 = (Double) X1.data;
                                     double v2 = (Double) X2.data;
-                                    if(v1 > v2){
+                                    if (v1 > v2) {
                                         ValStack.push(new Token<>(true, TokenType.bool));
-                                    }
-                                    else{
+                                    } else {
                                         ValStack.push(new Token<>(false, TokenType.bool));
                                     }
-                                }
-                                else if (X1.type == TokenType.str){
+                                } else if (X1.type == TokenType.str) {
                                     String v1 = (String) X1.data;
                                     String v2 = (String) X2.data;
-                                    if(v1.compareTo(v2) > 0){
+                                    if (v1.compareTo(v2) > 0) {
                                         ValStack.push(new Token<>(true, TokenType.bool));
-                                    }
-                                    else{
+                                    } else {
                                         ValStack.push(new Token<>(false, TokenType.bool));
                                     }
-                                }
-                                else{
+                                } else {
                                     throw new Exception("Cannot compare /gteq with bools.");
                                 }
-                            }
-                            else{
+                            } else {
                                 throw new Exception("Type mismatch. Can only compare two values of the same type.");
                             }
                             break;
@@ -614,86 +610,72 @@ public class HLANG {
                             X1 = ValStack.pop();
                             X2 = ValStack.pop();
 
-                            if(X1.type == X2.type){
-                                if(X1.type == TokenType.integer){
+                            if (X1.type == X2.type) {
+                                if (X1.type == TokenType.integer) {
                                     int v1 = (Integer) X1.data;
                                     int v2 = (Integer) X2.data;
-                                    if(v1 <= v2){
-                                        
+                                    if (v1 <= v2) {
+
                                         ValStack.push(new Token<>(true, TokenType.bool));
-                                    }
-                                    else{
+                                    } else {
                                         ValStack.push(new Token<>(false, TokenType.bool));
                                     }
-                                }
-                                else if(X1.type == TokenType.floating){
+                                } else if (X1.type == TokenType.floating) {
                                     double v1 = (Double) X1.data;
                                     double v2 = (Double) X2.data;
-                                    if(v1 <= v2){
+                                    if (v1 <= v2) {
                                         ValStack.push(new Token<>(true, TokenType.bool));
-                                    }
-                                    else{
+                                    } else {
                                         ValStack.push(new Token<>(false, TokenType.bool));
                                     }
-                                }
-                                else if (X1.type == TokenType.str){
+                                } else if (X1.type == TokenType.str) {
                                     String v1 = (String) X1.data;
                                     String v2 = (String) X2.data;
-                                    if(v1.compareTo(v2) <= 0){
+                                    if (v1.compareTo(v2) <= 0) {
                                         ValStack.push(new Token<>(true, TokenType.bool));
-                                    }
-                                    else{
+                                    } else {
                                         ValStack.push(new Token<>(false, TokenType.bool));
                                     }
-                                }
-                                else{
+                                } else {
                                     throw new Exception("Cannot compare /gteq with bools.");
                                 }
-                            }
-                            else{
+                            } else {
                                 throw new Exception("Type mismatch. Can only compare two values of the same type.");
                             }
                             break;
-                        case "/lt": 
+                        case "/lt":
                             X1 = ValStack.pop();
                             X2 = ValStack.pop();
 
-                            if(X1.type == X2.type){
-                                if(X1.type == TokenType.integer){
+                            if (X1.type == X2.type) {
+                                if (X1.type == TokenType.integer) {
                                     int v1 = (Integer) X1.data;
                                     int v2 = (Integer) X2.data;
-                                    if(v1 < v2){
+                                    if (v1 < v2) {
                                         ValStack.push(new Token<>(true, TokenType.bool));
-                                    }
-                                    else{
+                                    } else {
                                         ValStack.push(new Token<>(false, TokenType.bool));
                                     }
-                                }
-                                else if(X1.type == TokenType.floating){
+                                } else if (X1.type == TokenType.floating) {
                                     double v1 = (Double) X1.data;
                                     double v2 = (Double) X2.data;
-                                    if(v1 < v2){
+                                    if (v1 < v2) {
                                         ValStack.push(new Token<>(true, TokenType.bool));
-                                    }
-                                    else{
+                                    } else {
                                         ValStack.push(new Token<>(false, TokenType.bool));
                                     }
-                                }
-                                else if (X1.type == TokenType.str){
+                                } else if (X1.type == TokenType.str) {
                                     String v1 = (String) X1.data;
                                     String v2 = (String) X2.data;
-                                    if(v1.compareTo(v2) < 0){
+                                    if (v1.compareTo(v2) < 0) {
                                         ValStack.push(new Token<>(true, TokenType.bool));
-                                    }
-                                    else{
+                                    } else {
                                         ValStack.push(new Token<>(false, TokenType.bool));
                                     }
-                                }
-                                else{
+                                } else {
                                     throw new Exception("Cannot compare /gteq with bools.");
                                 }
-                            }
-                            else{
+                            } else {
                                 throw new Exception("Type mismatch. Can only compare two values of the same type.");
                             }
                             break;
@@ -701,42 +683,35 @@ public class HLANG {
                             X1 = ValStack.pop();
                             X2 = ValStack.pop();
 
-                            if(X1.type == X2.type){
-                                if(X1.type == TokenType.integer){
+                            if (X1.type == X2.type) {
+                                if (X1.type == TokenType.integer) {
                                     int v1 = (Integer) X1.data;
                                     int v2 = (Integer) X2.data;
-                                    if(v1 == v2){
+                                    if (v1 == v2) {
                                         ValStack.push(new Token<>(true, TokenType.bool));
-                                    }
-                                    else{
+                                    } else {
                                         ValStack.push(new Token<>(false, TokenType.bool));
                                     }
-                                }
-                                else if(X1.type == TokenType.floating){
+                                } else if (X1.type == TokenType.floating) {
                                     double v1 = (Double) X1.data;
                                     double v2 = (Double) X2.data;
-                                    if(v1 == v2){
+                                    if (v1 == v2) {
                                         ValStack.push(new Token<>(true, TokenType.bool));
-                                    }
-                                    else{
+                                    } else {
                                         ValStack.push(new Token<>(false, TokenType.bool));
                                     }
-                                }
-                                else if (X1.type == TokenType.str){
+                                } else if (X1.type == TokenType.str) {
                                     String v1 = (String) X1.data;
                                     String v2 = (String) X2.data;
-                                    if(v1.compareTo(v2) == 0){
+                                    if (v1.compareTo(v2) == 0) {
                                         ValStack.push(new Token<>(true, TokenType.bool));
-                                    }
-                                    else{
+                                    } else {
                                         ValStack.push(new Token<>(false, TokenType.bool));
                                     }
-                                }
-                                else{
+                                } else {
                                     throw new Exception("Cannot compare /gteq with bools.");
                                 }
-                            }
-                            else{
+                            } else {
                                 throw new Exception("Type mismatch. Can only compare two values of the same type.");
                             }
                             break;
@@ -744,47 +719,53 @@ public class HLANG {
                             X1 = ValStack.pop();
                             X2 = ValStack.pop();
 
-                            if(X1.type == X2.type){
-                                if(X1.type == TokenType.integer){
+                            if (X1.type == X2.type) {
+                                if (X1.type == TokenType.integer) {
                                     int v1 = (Integer) X1.data;
                                     int v2 = (Integer) X2.data;
-                                    if(v1 != v2){
+                                    if (v1 != v2) {
                                         ValStack.push(new Token<>(true, TokenType.bool));
-                                    }
-                                    else{
+                                    } else {
                                         ValStack.push(new Token<>(false, TokenType.bool));
                                     }
-                                }
-                                else if(X1.type == TokenType.floating){
+                                } else if (X1.type == TokenType.floating) {
                                     double v1 = (Double) X1.data;
                                     double v2 = (Double) X2.data;
-                                    if(v1 != v2){
+                                    if (v1 != v2) {
                                         ValStack.push(new Token<>(true, TokenType.bool));
-                                    }
-                                    else{
+                                    } else {
                                         ValStack.push(new Token<>(false, TokenType.bool));
                                     }
-                                }
-                                else if (X1.type == TokenType.str){
+                                } else if (X1.type == TokenType.str) {
                                     String v1 = (String) X1.data;
                                     String v2 = (String) X2.data;
-                                    if(v1.compareTo(v2) != 0){
+                                    if (v1.compareTo(v2) != 0) {
                                         ValStack.push(new Token<>(true, TokenType.bool));
-                                    }
-                                    else{
+                                    } else {
                                         ValStack.push(new Token<>(false, TokenType.bool));
                                     }
-                                }
-                                else{
+                                } else {
                                     throw new Exception("Cannot compare /gteq with bools.");
                                 }
-                            }
-                            else{
+                            } else {
                                 throw new Exception("Type mismatch. Can only compare two values of the same type.");
                             }
                             break;
                         default:
                             throw new Exception("Cannot Compile: Invaild Command!");
+                    }
+                    break;
+                case TokenType.ifstmt:
+                    Token<?> checkCond = ValStack.pop();
+                    Token<?> trueCond = ValStack.pop();
+                    Token<?> elseCond = ValStack.pop();
+                    Compiler((String) checkCond.data, variables, ValStack);
+                    Token<?> condition = ValStack.pop();
+                    boolean cond = (Boolean) condition.data;
+                    if (cond) {
+                        Compiler((String) trueCond.data, variables, ValStack);
+                    } else {
+                        Compiler((String) elseCond.data, variables, ValStack);
                     }
                     break;
                 default:
@@ -793,15 +774,57 @@ public class HLANG {
         }
     }
 
-    public static void Compiler(String cmd, HashMap<String,Token<?>> variables) throws Exception {
-        String[] compiledLines = cmd.split("\\.\\s*");
-        for(int i = 0; i < compiledLines.length; i++){
-            SingleLineCompiler(compiledLines[i] + ".", variables);
+    public static void Compiler(String cmd, HashMap<String, Token<?>> variables, Stack<Token<?>> ValStack)
+            throws Exception {
+        ArrayList<String> compiledLines = customSplit(cmd);
+        //System.out.println("Split: " + compiledLines);
+        for (int i = 0; i < compiledLines.size(); i++) {
+            SingleLineCompiler(compiledLines.get(i) + ".", variables, ValStack);
         }
     }
 
+    private static ArrayList<String> customSplit(String cmd) {
+        ArrayList<String> res = new ArrayList<>();
+        boolean ignoreProg = false;
+        boolean ignoreAtt = false;
+        boolean ignoreStr = false;
+        String cur = "";
+        for (int i = 0; i < cmd.length(); i++) {
+            char curchar = cmd.charAt(i);
+            if (curchar == '"') {
+                ignoreStr = !ignoreStr;
+                cur += curchar;
+            } else if (curchar == '(') {
+                ignoreAtt = true;
+                cur += curchar;
+            } else if (curchar == '{') {
+                ignoreProg = true;
+                cur += curchar;
+            } else if (curchar == ')') {
+                ignoreAtt = false;
+                cur += curchar;
+            } else if (curchar == '}') {
+                ignoreProg = false;
+                cur += curchar;
+            } else if (curchar == '.') {
+                if (ignoreProg || ignoreAtt || ignoreStr) {
+                    cur += curchar;
+                } else {
+                    res.add(cur);
+                    cur = "";
+                }
+            } else {
+                cur += curchar;
+            }
+        }
+        if (cur.length() > 0) {
+            res.add(cur);
+        }
+        return res;
+    }
+
     public static void main(String[] args) throws Exception {
-        String cmd = "/print /and T T.";
-        Compiler(cmd, new HashMap<>());
+        String cmd = "/var x 200. /var y 200. /if (/gteq /x /y.) {/if (/eq /x /y.) {/print \"X is equal to Y\".} {/print \"X is bigger than Y\".}} {/print \"Y is \". /print \" Bigger Than X\".}.";
+        Compiler(cmd, new HashMap<>(), new Stack<>());
     }
 }
