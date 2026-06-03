@@ -1,6 +1,8 @@
 import java.io.EOFException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Stack;
 
@@ -18,7 +20,8 @@ public class HLANG {
         ifstmt,
         prog,
         attribute,
-        function,
+        functcreate,
+        functdec,
         output,
         // Data Types
         integer,
@@ -39,6 +42,65 @@ public class HLANG {
         @Override
         public String toString() {
             return type + " : " + data.getClass().getSimpleName() + " " + data;
+        }
+    }
+
+    private static class HLangFunct {
+        String functName;
+        private LinkedHashMap<String, Token<?>> param;
+        Token<?> prog;
+
+        HLangFunct(String functN, Token<?> pro) {
+            functName = functN;
+            prog = pro;
+            param = new LinkedHashMap<>();
+        }
+
+        void AddParam(String varName) {
+            //System.out.println("Adding param: [" + varName + "]");
+            param.put(varName, null);
+        }
+
+        void SetParam(String varName, Token<?> data) {
+            param.replace(varName, data);
+        }
+
+        void ResetParams() {
+            for (String n : param.keySet()) {
+                param.replace(n, null);
+            }
+        }
+
+        // Debug Method
+        LinkedList<String> GetParams() {
+            LinkedList<String> res = new LinkedList<>();
+            for (String n : param.keySet()) {
+                res.add(n + " = " + param.get(n));
+            }
+            return res;
+        }
+
+        void CallFunction(
+                LinkedList<Token<?>> parameters,
+                HashMap<String, Token<?>> variables,
+                Stack<Token<?>> ValStack,
+                HashMap<String, HLangFunct> function) throws Exception {
+
+            HashMap<String, Token<?>> localVars = new HashMap<>();
+
+            for (String n : param.keySet()) {
+                Token<?> param1 = parameters.remove();
+
+                if (param1.type == TokenType.var) {
+                    localVars.put(
+                            n,
+                            variables.get(((String) param1.data).substring(1)));
+                } else {
+                    localVars.put(n, param1);
+                }
+            }
+
+            Compiler((String) prog.data, localVars, ValStack, function);
         }
     }
 
@@ -148,6 +210,12 @@ public class HLANG {
                     case "/if":
                         lexedList.add(new Token<String>(curStr, TokenType.ifstmt));
                         break;
+                    case "/usefun":
+                        lexedList.add(new Token<String>(curStr, TokenType.functdec));
+                        break;
+                    case "/defun":
+                        lexedList.add(new Token<String>(curStr, TokenType.functcreate));
+                        break;
                     default:
                         lexedList.add(new Token<String>(curStr, TokenType.var));
                         break;
@@ -200,13 +268,13 @@ public class HLANG {
         TreeNode curNode = new TreeNode(cur);
         int childrenCount = 0;
         switch (cur.type) {
-            case TokenType.arithmetic, TokenType.vardec, TokenType.logical, TokenType.conditional, TokenType.function:
+            case TokenType.arithmetic, TokenType.vardec, TokenType.logical, TokenType.conditional, TokenType.functdec:
                 childrenCount = 2;
                 break;
             case TokenType.singleArith, TokenType.logicalnot, TokenType.output:
                 childrenCount = 1;
                 break;
-            case TokenType.ifstmt:
+            case TokenType.ifstmt, TokenType.functcreate:
                 childrenCount = 3;
                 break;
             default:
@@ -248,7 +316,8 @@ public class HLANG {
         return res;
     }
 
-    private static void SingleLineCompiler(String cmd, HashMap<String, Token<?>> variables, Stack<Token<?>> ValStack)
+    private static void SingleLineCompiler(String cmd, HashMap<String, Token<?>> variables, Stack<Token<?>> ValStack,
+            HashMap<String, HLangFunct> functions)
             throws Exception {
         LinkedList<Token<?>> interpret = Interpreter(Parser(Lexer(cmd)));
         //System.out.println("Interpeted String: " + interpret);
@@ -262,8 +331,8 @@ public class HLANG {
                 case TokenType.arithmetic:
                     switch ((String) cur.data) {
                         case "/add":
-                            Token<?> X2 = ValStack.pop();
                             Token<?> X1 = ValStack.pop();
+                            Token<?> X2 = ValStack.pop();
                             if (X1.type == TokenType.integer && X2.type == TokenType.integer) {
                                 int v1 = (Integer) X1.data;
                                 int v2 = (Integer) X2.data;
@@ -319,8 +388,8 @@ public class HLANG {
                             }
                             break;
                         case "/sub":
-                            X2 = ValStack.pop();
                             X1 = ValStack.pop();
+                            X2 = ValStack.pop();
                             if (X1.type == TokenType.integer && X2.type == TokenType.integer) {
                                 int v1 = (Integer) X1.data;
                                 int v2 = (Integer) X2.data;
@@ -346,8 +415,8 @@ public class HLANG {
                             }
                             break;
                         case "/mul":
-                            X2 = ValStack.pop();
                             X1 = ValStack.pop();
+                            X2 = ValStack.pop();
                             if (X1.type == TokenType.integer && X2.type == TokenType.integer) {
                                 int v1 = (Integer) X1.data;
                                 int v2 = (Integer) X2.data;
@@ -373,8 +442,8 @@ public class HLANG {
                             }
                             break;
                         case "/div":
-                            X2 = ValStack.pop();
                             X1 = ValStack.pop();
+                            X2 = ValStack.pop();
                             if (X1.type == TokenType.integer && X2.type == TokenType.integer) {
                                 int v1 = (Integer) X1.data;
                                 int v2 = (Integer) X2.data;
@@ -400,8 +469,8 @@ public class HLANG {
                             }
                             break;
                         case "/mod":
-                            X2 = ValStack.pop();
                             X1 = ValStack.pop();
+                            X2 = ValStack.pop();
                             if (X1.type == TokenType.integer && X2.type == TokenType.integer) {
                                 int v1 = (Integer) X1.data;
                                 int v2 = (Integer) X2.data;
@@ -412,8 +481,8 @@ public class HLANG {
                             }
                             break;
                         case "/pow":
-                            X2 = ValStack.pop();
                             X1 = ValStack.pop();
+                            X2 = ValStack.pop();
                             if (X1.type == TokenType.integer && X2.type == TokenType.integer) {
                                 int v1 = (Integer) X1.data;
                                 int v2 = (Integer) X2.data;
@@ -759,14 +828,38 @@ public class HLANG {
                     Token<?> checkCond = ValStack.pop();
                     Token<?> trueCond = ValStack.pop();
                     Token<?> elseCond = ValStack.pop();
-                    Compiler((String) checkCond.data, variables, ValStack);
+
+                    Compiler((String) checkCond.data, variables, ValStack, functions);
                     Token<?> condition = ValStack.pop();
                     boolean cond = (Boolean) condition.data;
                     if (cond) {
-                        Compiler((String) trueCond.data, variables, ValStack);
+                        Compiler((String) trueCond.data, variables, ValStack, functions);
                     } else {
-                        Compiler((String) elseCond.data, variables, ValStack);
+                        Compiler((String) elseCond.data, variables, ValStack, functions);
                     }
+                    break;
+                case TokenType.functcreate:
+                    Token<?> functName = ValStack.pop();
+                    Token<?> varNames = ValStack.pop();
+                    Token<?> prog = ValStack.pop();
+                    HLangFunct n = new HLangFunct((String) functName.data, prog);
+                    String[] varNameList = ((String) varNames.data).trim().split("\\s+");
+                    ;
+                    for (int i = 0; i < varNameList.length; i++) {
+                        n.AddParam(varNameList[i]);
+                    }
+                    functions.put((String) functName.data, n);
+                    break;
+                case TokenType.functdec:
+                    functName = ValStack.pop();
+                    Token<?> params = ValStack.pop();
+                    LinkedList<Token<?>> paramList = new LinkedList<>();
+                    String[] paramArr = ((String) params.data).split(" ");
+                    for (int i = 0; i < paramArr.length; i++) {
+                        paramList.add(Lexer(paramArr[i] + ".").get(0));
+                    }
+                    // System.out.println(paramList);
+                    functions.get((String) functName.data).CallFunction(paramList, variables, ValStack, functions);
                     break;
                 default:
                     break;
@@ -774,12 +867,13 @@ public class HLANG {
         }
     }
 
-    public static void Compiler(String cmd, HashMap<String, Token<?>> variables, Stack<Token<?>> ValStack)
+    public static void Compiler(String cmd, HashMap<String, Token<?>> variables, Stack<Token<?>> ValStack,
+            HashMap<String, HLangFunct> functions)
             throws Exception {
         ArrayList<String> compiledLines = customSplit(cmd);
         //System.out.println("Split: " + compiledLines);
         for (int i = 0; i < compiledLines.size(); i++) {
-            SingleLineCompiler(compiledLines.get(i) + ".", variables, ValStack);
+            SingleLineCompiler(compiledLines.get(i) + ".", variables, ValStack, functions);
         }
     }
 
@@ -824,7 +918,7 @@ public class HLANG {
     }
 
     public static void main(String[] args) throws Exception {
-        String cmd = "/var x 200. /var y 200. /if (/gteq /x /y.) {/if (/eq /x /y.) {/print \"X is equal to Y\".} {/print \"X is bigger than Y\".}} {/print \"Y is \". /print \" Bigger Than X\".}.";
-        Compiler(cmd, new HashMap<>(), new Stack<>());
+        String cmd = "/defun fibo (x1 x2 times) {/if (/gt /times 0) {/var t /x1. /var x1 /x2. /var x2 /add /x1 /t. /var times /sub /times 1. /usefun fibo (/x1 /x2 /times).} {/print /x2.}}. /usefun fibo (0 1 10).";
+        Compiler(cmd, new HashMap<>(), new Stack<>(), new HashMap<>());
     }
 }
