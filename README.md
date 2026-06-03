@@ -66,3 +66,4 @@ To open the shell type (1.1 ONLY):
 | v2.0 + HSh2.0 | Expected June 4, 2026 | Offical Release. |
 | Web1.0 | SOON | Online Compiler + Website |
 | Web1.1 | SOON | Offical Manual |
+| v2.1 | Soon | Mapcar. |
