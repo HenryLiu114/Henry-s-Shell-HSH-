@@ -1,0 +1,11 @@
+/defun sumoflist (l R) {
+    /if (/not /isempty l) 
+        {
+            /car l x.
+            /var R /add /R /x.
+            /cdr l l.
+            /usefun sumoflist (/l /R).
+        }
+        {/print /R.}
+}.
+/usefun sumoflist ([1, 2, 3, 4] 0).

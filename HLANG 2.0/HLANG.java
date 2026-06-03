@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Stack;
 
 public class HLANG {
@@ -23,11 +24,17 @@ public class HLANG {
         functcreate,
         functdec,
         output,
+        listdec,
+        cons,
+        car,
+        cdr,
+        listlogic,
         // Data Types
         integer,
         floating,
         str,
-        bool
+        bool,
+        list
     }
 
     private static class Token<T> {
@@ -41,6 +48,11 @@ public class HLANG {
 
         @Override
         public String toString() {
+            return data + "";
+
+        }
+
+        public String toStringDebug() {
             return type + " : " + data.getClass().getSimpleName() + " " + data;
         }
     }
@@ -57,7 +69,7 @@ public class HLANG {
         }
 
         void AddParam(String varName) {
-            //System.out.println("Adding param: [" + varName + "]");
+            // System.out.println("Adding param: [" + varName + "]");
             param.put(varName, null);
         }
 
@@ -109,6 +121,7 @@ public class HLANG {
         boolean isFinished = false;
         int progCount = 0;
         boolean attribute = false;
+        int listBrackets = 0;
         String cur = "";
         LinkedList<String> strList = new LinkedList<>();
         LinkedList<Token<?>> lexedList = new LinkedList<>();
@@ -117,7 +130,22 @@ public class HLANG {
         while (i < cmd.length() && !isFinished) {
             char curChar = cmd.charAt(i);
             // System.out.println("Cur: " + cur);
-            if (isString) {
+            if (listBrackets > 0) {
+                cur += curChar;
+
+                if (curChar == '[') {
+                    listBrackets++;
+                } else if (curChar == ']') {
+                    listBrackets--;
+
+                    if (listBrackets == 0) {
+                        strList.add(cur);
+                        cur = "";
+                    }
+                } else if (curChar == '"') {
+                    isString = !isString;
+                }
+            } else if (isString) {
                 if (curChar == '"') {
                     cur += curChar;
                     isString = !isString;
@@ -163,6 +191,10 @@ public class HLANG {
                     case '(':
                         cur += curChar;
                         attribute = true;
+                        break;
+                    case '[':
+                        cur += curChar;
+                        listBrackets++;
                         break;
                     case '.':
                         if (cur.length() != 0) {
@@ -216,6 +248,21 @@ public class HLANG {
                     case "/defun":
                         lexedList.add(new Token<String>(curStr, TokenType.functcreate));
                         break;
+                    case "/list":
+                        lexedList.add(new Token<String>(curStr, TokenType.listdec));
+                        break;
+                    case "/cons":
+                        lexedList.add(new Token<String>(curStr, TokenType.cons));
+                        break;
+                    case "/car":
+                        lexedList.add(new Token<String>(curStr, TokenType.car));
+                        break;
+                    case "/cdr":
+                        lexedList.add(new Token<String>(curStr, TokenType.cdr));
+                        break;
+                    case "/isempty":
+                        lexedList.add(new Token<String>(curStr, TokenType.listlogic));
+                        break;
                     default:
                         lexedList.add(new Token<String>(curStr, TokenType.var));
                         break;
@@ -226,6 +273,13 @@ public class HLANG {
                 lexedList.add(new Token<String>(curStr.substring(1, curStr.length() - 1), TokenType.attribute));
             } else if (curStr.charAt(0) == '{') {
                 lexedList.add(new Token<String>(curStr.substring(1, curStr.length() - 1), TokenType.prog));
+            } else if (curStr.charAt(0) == '[') {
+                List<String> lis = splitTopLevel(curStr.substring(1, curStr.length() - 1));
+                LinkedList<Token<?>> list = new LinkedList<>();
+                for (int k = 0; k < lis.size(); k++) {
+                    list.add(Lexer(lis.get(k) + ".").get(0));
+                }
+                lexedList.add(new Token<LinkedList<Token<?>>>(list, TokenType.list));
             } else {
                 if (curStr.contains(".")) {
                     try {
@@ -246,7 +300,38 @@ public class HLANG {
                 }
             }
         }
+        System.out.println(lexedList);
         return lexedList;
+    }
+
+    private static List<String> splitTopLevel(String s) {
+        List<String> result = new ArrayList<>();
+        StringBuilder current = new StringBuilder();
+
+        int depth = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+
+            if (c == '[') {
+                depth++;
+                current.append(c);
+            } else if (c == ']') {
+                depth--;
+                current.append(c);
+            } else if (c == ',' && depth == 0) {
+                result.add(current.toString().trim());
+                current.setLength(0);
+            } else {
+                current.append(c);
+            }
+        }
+
+        if (current.length() > 0) {
+            result.add(current.toString().trim());
+        }
+
+        return result;
     }
 
     static class TreeNode {
@@ -268,10 +353,11 @@ public class HLANG {
         TreeNode curNode = new TreeNode(cur);
         int childrenCount = 0;
         switch (cur.type) {
-            case TokenType.arithmetic, TokenType.vardec, TokenType.logical, TokenType.conditional, TokenType.functdec:
+            case TokenType.arithmetic, TokenType.vardec, TokenType.logical, TokenType.conditional, TokenType.functdec,
+                    TokenType.listdec, TokenType.cons, TokenType.car, TokenType.cdr:
                 childrenCount = 2;
                 break;
-            case TokenType.singleArith, TokenType.logicalnot, TokenType.output:
+            case TokenType.singleArith, TokenType.logicalnot, TokenType.output, TokenType.listlogic:
                 childrenCount = 1;
                 break;
             case TokenType.ifstmt, TokenType.functcreate:
@@ -319,13 +405,16 @@ public class HLANG {
     private static void SingleLineCompiler(String cmd, HashMap<String, Token<?>> variables, Stack<Token<?>> ValStack,
             HashMap<String, HLangFunct> functions)
             throws Exception {
+                System.out.println(cmd);
         LinkedList<Token<?>> interpret = Interpreter(Parser(Lexer(cmd)));
-        //System.out.println("Interpeted String: " + interpret);
+        //System.out.println("Val Stack: " + ValStack);
+        System.out.println("Interpeted String: " + interpret);
+        System.out.println("Vars: " + variables);
         while (!interpret.isEmpty()) {
             Token<?> cur = interpret.remove();
             switch (cur.type) {
                 case TokenType.integer, TokenType.floating, TokenType.str, TokenType.bool, TokenType.varname,
-                        TokenType.prog, TokenType.attribute:
+                        TokenType.prog, TokenType.attribute, TokenType.list:
                     ValStack.push(cur);
                     break;
                 case TokenType.arithmetic:
@@ -531,12 +620,13 @@ public class HLANG {
                     }
                     break;
                 case TokenType.output:
+                    Token<?> print = ValStack.pop();
                     switch ((String) cur.data) {
                         case "/print":
-                            System.out.print(ValStack.pop().data);
+                            System.out.print(print.data);
                             break;
                         case "/println":
-                            System.out.println(ValStack.pop().data);
+                            System.out.println(print.data);
                             break;
                         default:
                             throw new Exception("Cannot Compile: Invaild Command!");
@@ -854,12 +944,52 @@ public class HLANG {
                     functName = ValStack.pop();
                     Token<?> params = ValStack.pop();
                     LinkedList<Token<?>> paramList = new LinkedList<>();
-                    String[] paramArr = ((String) params.data).split(" ");
-                    for (int i = 0; i < paramArr.length; i++) {
-                        paramList.add(Lexer(paramArr[i] + ".").get(0));
+                    List<String> paramArr = splitArgs(((String) params.data));
+                    for (int i = 0; i < paramArr.size(); i++) {
+                        paramList.add(Lexer(paramArr.get(i) + ".").get(0));
                     }
                     // System.out.println(paramList);
                     functions.get((String) functName.data).CallFunction(paramList, variables, ValStack, functions);
+                    break;
+                case TokenType.listdec:
+                    Token<?> varname = ValStack.pop();
+                    Token<?> list = ValStack.pop();
+                    variables.put((String) varname.data, list);
+                    break;
+                case TokenType.cons:
+                    varname = ValStack.pop();
+                    Token<?> item = ValStack.pop();
+                    Token<?> listToken = variables.get((String) varname.data);
+
+                    @SuppressWarnings("unchecked")
+                    LinkedList<Token<?>> lists = (LinkedList<Token<?>>) listToken.data;
+
+                    lists.add(item);
+                    break;
+                case TokenType.car:
+                    varname = ValStack.pop();
+                    Token<?> store = ValStack.pop();
+                    listToken = variables.get((String) varname.data);
+                    @SuppressWarnings("unchecked")
+                    LinkedList<Token<?>> listcar = (LinkedList<Token<?>>) listToken.data;
+                    variables.put((String) store.data, listcar.getFirst());
+                    break;
+                case TokenType.cdr:
+                    varname = ValStack.pop();
+                    listToken = variables.get((String) varname.data);
+                    store = ValStack.pop();
+                    @SuppressWarnings("unchecked")
+                    LinkedList<Token<?>> original = (LinkedList<Token<?>>) listToken.data;
+
+                    original.removeFirst();
+                    variables.put((String) store.data, new Token<>(original, TokenType.list));
+                    break;
+                case TokenType.listlogic:
+                    varname = ValStack.pop();
+                    listToken = variables.get((String) varname.data);
+                    @SuppressWarnings("unchecked")
+                    LinkedList<Token<?>> checklen = (LinkedList<Token<?>>) listToken.data;
+                    ValStack.push(new Token<Boolean>(checklen.isEmpty(), TokenType.bool));
                     break;
                 default:
                     break;
@@ -867,11 +997,64 @@ public class HLANG {
         }
     }
 
+    public static List<String> splitArgs(String s) {
+        List<String> result = new ArrayList<>();
+        StringBuilder current = new StringBuilder();
+
+        int bracketDepth = 0;
+        int parenDepth = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+
+            switch (c) {
+                case '[':
+                    bracketDepth++;
+                    current.append(c);
+                    break;
+
+                case ']':
+                    bracketDepth--;
+                    current.append(c);
+                    break;
+
+                case '(':
+                    parenDepth++;
+                    current.append(c);
+                    break;
+
+                case ')':
+                    parenDepth--;
+                    current.append(c);
+                    break;
+
+                default:
+                    if (Character.isWhitespace(c)
+                            && bracketDepth == 0
+                            && parenDepth == 0) {
+
+                        if (current.length() > 0) {
+                            result.add(current.toString());
+                            current.setLength(0);
+                        }
+                    } else {
+                        current.append(c);
+                    }
+            }
+        }
+
+        if (current.length() > 0) {
+            result.add(current.toString());
+        }
+
+        return result;
+    }
+
     public static void Compiler(String cmd, HashMap<String, Token<?>> variables, Stack<Token<?>> ValStack,
             HashMap<String, HLangFunct> functions)
             throws Exception {
         ArrayList<String> compiledLines = customSplit(cmd);
-        //System.out.println("Split: " + compiledLines);
+        // System.out.println("Split: " + compiledLines);
         for (int i = 0; i < compiledLines.size(); i++) {
             SingleLineCompiler(compiledLines.get(i) + ".", variables, ValStack, functions);
         }
@@ -918,7 +1101,7 @@ public class HLANG {
     }
 
     public static void main(String[] args) throws Exception {
-        String cmd = "/defun fibo (x1 x2 times) {/if (/gt /times 0) {/var t /x1. /var x1 /x2. /var x2 /add /x1 /t. /var times /sub /times 1. /usefun fibo (/x1 /x2 /times).} {/print /x2.}}. /usefun fibo (0 1 10).";
+        String cmd = "/defun sumoflist (l R) {/if (/not /isempty l) {/car l x. /var R /add /R /x. /cdr l l. /usefun sumoflist (/l /R).} {/print /R.}}. /usefun sumoflist ([1, 2, 3, 4] 0).";
         Compiler(cmd, new HashMap<>(), new Stack<>(), new HashMap<>());
     }
 }
