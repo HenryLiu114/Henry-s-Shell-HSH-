@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Stack;
 
 public class HLANG {
@@ -29,6 +30,8 @@ public class HLANG {
         car,
         cdr,
         listlogic,
+        input,
+        mapcar,
         // Data Types
         integer,
         floating,
@@ -263,6 +266,12 @@ public class HLANG {
                     case "/isempty":
                         lexedList.add(new Token<String>(curStr, TokenType.listlogic));
                         break;
+                    case "/prompt":
+                        lexedList.add(new Token<String>(curStr, TokenType.input));
+                        break;
+                    case "/mapcar":
+                        lexedList.add(new Token<String>(curStr, TokenType.mapcar));
+                        break;
                     default:
                         lexedList.add(new Token<String>(curStr, TokenType.var));
                         break;
@@ -300,7 +309,7 @@ public class HLANG {
                 }
             }
         }
-        System.out.println(lexedList);
+        // System.out.println(lexedList);
         return lexedList;
     }
 
@@ -354,7 +363,7 @@ public class HLANG {
         int childrenCount = 0;
         switch (cur.type) {
             case TokenType.arithmetic, TokenType.vardec, TokenType.logical, TokenType.conditional, TokenType.functdec,
-                    TokenType.listdec, TokenType.cons, TokenType.car, TokenType.cdr:
+                    TokenType.listdec, TokenType.cons, TokenType.car, TokenType.cdr, TokenType.input, TokenType.mapcar:
                 childrenCount = 2;
                 break;
             case TokenType.singleArith, TokenType.logicalnot, TokenType.output, TokenType.listlogic:
@@ -405,11 +414,11 @@ public class HLANG {
     private static void SingleLineCompiler(String cmd, HashMap<String, Token<?>> variables, Stack<Token<?>> ValStack,
             HashMap<String, HLangFunct> functions)
             throws Exception {
-                System.out.println(cmd);
+        // System.out.println(cmd);
         LinkedList<Token<?>> interpret = Interpreter(Parser(Lexer(cmd)));
-        //System.out.println("Val Stack: " + ValStack);
-        System.out.println("Interpeted String: " + interpret);
-        System.out.println("Vars: " + variables);
+        // System.out.println("Val Stack: " + ValStack);
+        // System.out.println("Interpeted String: " + interpret);
+        // System.out.println("Vars: " + variables);
         while (!interpret.isEmpty()) {
             Token<?> cur = interpret.remove();
             switch (cur.type) {
@@ -991,6 +1000,16 @@ public class HLANG {
                     LinkedList<Token<?>> checklen = (LinkedList<Token<?>>) listToken.data;
                     ValStack.push(new Token<Boolean>(checklen.isEmpty(), TokenType.bool));
                     break;
+                case TokenType.input:
+                    Scanner sc = new Scanner(System.in);
+                    Token<?> prompt = ValStack.pop();
+                    varname = ValStack.pop();
+                    System.out.print((String) prompt.data);
+                    variables.put((String) varname.data, Lexer(sc.nextLine() + ".").get(0));
+                    break;
+                case TokenType.mapcar:
+                    //Sometime Soon
+                    break;
                 default:
                     break;
             }
@@ -1101,7 +1120,7 @@ public class HLANG {
     }
 
     public static void main(String[] args) throws Exception {
-        String cmd = "/defun sumoflist (l R) {/if (/not /isempty l) {/car l x. /var R /add /R /x. /cdr l l. /usefun sumoflist (/l /R).} {/print /R.}}. /usefun sumoflist ([1, 2, 3, 4] 0).";
+        String cmd = "";
         Compiler(cmd, new HashMap<>(), new Stack<>(), new HashMap<>());
     }
 }

@@ -1,4 +1,4 @@
-# HLANG/HSh Version 2.0.3 Alpha
+# HLANG/HSh Version 2.0 Beta
 A open source java based shell created by yours truly.
 
 This repo also comes in with a built in programming language called "HLANG" (Henry's Language).
@@ -40,6 +40,7 @@ To open the shell type (1.1 ONLY):
 # HLANG/HSh Changlog:
 | HLANG/HSh Version | Date | Changes |
 |---------|------|---------|
+| v2.0b | June 3, 2026 | Input Functionality. |
 | v2.0.3a | June 3, 2026 | Lists and List Commands. |
 | v2.0.2a | June 2, 2026 | Recursion + Functions. |
 | v2.0.1a | June 2, 2026 | Nested ifs and regular if statements. |
@@ -61,7 +62,6 @@ To open the shell type (1.1 ONLY):
 # Future Plans:
 | HLANG/HSh Version | Date | Changes |
 |---------|------|---------|
-| v2.0b | SOON | Rebuild all functionality from HLANG 1.1. |
 | v2.0 | SOON | Terminal + Download. |
 | Web1.0 | SOON | Online Compiler + Website |
 | Web1.1 | SOON | Offical Manual |

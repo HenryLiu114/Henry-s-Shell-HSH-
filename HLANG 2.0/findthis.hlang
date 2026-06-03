@@ -1,0 +1,9 @@
+/defun findThis (l x) {
+    /if (/isempty l) 
+        {/print \"Cannot Find\".} 
+        {/car l t. /if (/eq /x /t) 
+            {/print \"Found\".} 
+            {/cdr l l. /usefun findThis (/l /x).}
+        }
+}. 
+/usefun findThis ([\"a\",\"b\",\"c\"] \"c\").
