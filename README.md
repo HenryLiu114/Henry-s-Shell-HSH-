@@ -1,4 +1,4 @@
-# HLANG/HSh Version 2.0.3 Alpha
+# HLANG Version 2.0.3 Beta
 A open source java based shell created by yours truly.
 
 This repo also comes in with a built in programming language called "HLANG" (Henry's Language).
@@ -32,19 +32,19 @@ I promise the following for this new 2.0 version:
 Thank You for Understanding,
 Henry
 
-
+# HSh Version: 1.0
 To open the shell type (1.1 ONLY):
 | hsh  |
 |-------------------|
 
-# HLANG/HSh Changlog:
-| HLANG/HSh Version | Date | Changes |
+# HLANG Changlog:
+| HLANG Version | Date | Changes |
 |---------|------|---------|
 | v2.0.3a | June 3, 2026 | Lists and List Commands. |
 | v2.0.2a | June 2, 2026 | Recursion + Functions. |
 | v2.0.1a | June 2, 2026 | Nested ifs and regular if statements. |
 | v2.0a | June 1, 2026 | Began rebuilding the lanaguage from scratch. |
-| v1.1 | Apr 15, 2026 | Build the H Shell that can take HLANG Code and custom commands. |
+| v1.1 + HSh1.0 | Apr 15, 2026 | Build the H Shell that can take HLANG Code and custom commands. |
 | v1.0 | Apr 15, 2026 | List Operations: /cdr, /cons, /null, and ? (nullvalue). |
 | v0.6 | Apr 14, 2026 | List Recursion Works, and added some basic list commands: /newlist, /consvar, /uselist. Recursion now takes in either a preset list () or a list variable /newlist. |
 | v0.55 | Apr 14, 2026 | Basic Recursion Implmented. |
@@ -59,9 +59,10 @@ To open the shell type (1.1 ONLY):
 | v0 | Mar 24, 2026 | Date of Repo Creation. |
 
 # Future Plans:
-| HLANG/HSh Version | Date | Changes |
+| HLANG Version | Date | Changes |
 |---------|------|---------|
-| v2.0b | Expected June 3, 2026 | Rebuild all functionality from HLANG 1.1. |
-| v2.0 | Expected June 4, 2026 | Terminal + Download. |
+| v2.0b | Expected June 3, 2026 | Input Stream and Mapcar. |
+| HSh2.0pre | Expected June 3, 2026 | New and Improved Henry Shell. |
+| v2.0 + HSh2.0 | Expected June 4, 2026 | Offical Release. |
 | Web1.0 | SOON | Online Compiler + Website |
 | Web1.1 | SOON | Offical Manual |
