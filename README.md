@@ -1,4 +1,4 @@
-# HLANG/HSh Version 2.0.1 Alpha
+# HLANG/HSh Version 2.0.2 Alpha
 A open source java based shell created by yours truly.
 
 This repo also comes in with a built in programming language called "HLANG" (Henry's Language).
@@ -40,8 +40,9 @@ To open the shell type (1.1 ONLY):
 # HLANG/HSh Changlog:
 | HLANG/HSh Version | Date | Changes |
 |---------|------|---------|
-| v2.0.1a | June 6, 2026 | Nested ifs and regular if statements. |
-| v2.0a | June 6, 2026 | Began rebuilding the lanaguage from scratch. |
+| v2.0.2a | June 2, 2026 | Recursion + Functions. |
+| v2.0.1a | June 2, 2026 | Nested ifs and regular if statements. |
+| v2.0a | June 1, 2026 | Began rebuilding the lanaguage from scratch. |
 | v1.1 | Apr 15, 2026 | Build the H Shell that can take HLANG Code and custom commands. |
 | v1.0 | Apr 15, 2026 | List Operations: /cdr, /cons, /null, and ? (nullvalue). |
 | v0.6 | Apr 14, 2026 | List Recursion Works, and added some basic list commands: /newlist, /consvar, /uselist. Recursion now takes in either a preset list () or a list variable /newlist. |
