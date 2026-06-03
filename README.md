@@ -1,4 +1,4 @@
-# HLANG Version 2.0.3 Beta
+# HLANG Version 2.0 Beta
 A open source java based shell created by yours truly.
 
 This repo also comes in with a built in programming language called "HLANG" (Henry's Language).
