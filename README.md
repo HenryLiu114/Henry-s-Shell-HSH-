@@ -61,7 +61,7 @@ To open the shell type (1.1 ONLY):
 # Future Plans:
 | HLANG/HSh Version | Date | Changes |
 |---------|------|---------|
-| v2.0b | SOON | Rebuild all functionality from HLANG 1.1. |
-| v2.0 | SOON | Terminal + Download. |
+| v2.0b | Expected June 3, 2026 | Rebuild all functionality from HLANG 1.1. |
+| v2.0 | Expected June 4, 2026 | Terminal + Download. |
 | Web1.0 | SOON | Online Compiler + Website |
 | Web1.1 | SOON | Offical Manual |
