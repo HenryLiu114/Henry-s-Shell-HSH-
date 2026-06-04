@@ -32,14 +32,9 @@ I promise the following for this new 2.0 version:
 Thank You for Understanding,
 Henry
 
-# HSh Version: 1.0
-To open the shell type (1.1 ONLY):
-| hsh  |
-|-------------------|
-
 # HSh Version: 2.0
 To run any hlang file, type:
-| hsh <filePath> |
+| hsh <filepath<awdsa>> |
 |-------------------|
 
 # HLANG Changlog:
