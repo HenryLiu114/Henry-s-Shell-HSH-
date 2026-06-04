@@ -11,6 +11,6 @@
                     /usefun gcf (/a /b).
                 }.
         }.
-    /print "hi mom".
 }.
 /usefun gcf (12 20).
+

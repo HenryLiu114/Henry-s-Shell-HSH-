@@ -22,7 +22,7 @@ public class HSH {
     }
 
     public static void main(String[] args) throws FileNotFoundException, Exception {
-        String stuff = readFromFile(args[0]);
+        String stuff = readFromFile(args[0] + ".hlang");
         HLANG.Compiler(stuff, new HashMap<>(), new Stack<>(), new HashMap<>());
     }
     //public static void main(String[] args) throws FileNotFoundException, Exception {

@@ -36,6 +36,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Files]
 Source: "C:\Users\Henry\OneDrive\Desktop\HLang Source Files\Henry-s-Shell-HSH-\HLANG 2.0\HLANG.jar"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\Henry\OneDrive\Desktop\HLang Source Files\Henry-s-Shell-HSH-\HLANG 2.0\hsh.bat"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Henry\OneDrive\Desktop\HLang Source Files\Henry-s-Shell-HSH-\HLANG 2.0\callo.bat"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Henry\OneDrive\Desktop\HLang Source Files\Henry-s-Shell-HSH-\HLANG 2.0\eallo.bat"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Tasks]
