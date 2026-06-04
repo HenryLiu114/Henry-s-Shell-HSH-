@@ -37,9 +37,15 @@ To open the shell type (1.1 ONLY):
 | hsh  |
 |-------------------|
 
+# HSh Version: 2.0
+To run any hlang file, type:
+| hsh <filePath> |
+|-------------------|
+
 # HLANG Changlog:
 | HLANG Version | Date | Changes |
 |---------|------|---------|
+| HSh2.0pre | June 3, 2026 | New and Improved Henry Shell. |
 | v2.0b | June 3, 2026 | Input Functionality. |
 | v2.0.3a | June 3, 2026 | Lists and List Commands. |
 | v2.0.2a | June 2, 2026 | Recursion + Functions. |
@@ -62,7 +68,6 @@ To open the shell type (1.1 ONLY):
 # Future Plans:
 | HLANG Version | Date | Changes |
 |---------|------|---------|
-| HSh2.0pre | Expected June 4, 2026 | New and Improved Henry Shell. |
 | v2.0 + HSh2.0 | Expected June 5, 2026 | Offical Release. |
 | Web1.0 | SOON | Online Compiler + Website |
 | Web1.1 | SOON | Offical Manual |
