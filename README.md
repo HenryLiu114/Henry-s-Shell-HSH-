@@ -1,4 +1,4 @@
-# HLANG Version 2.0 Beta
+# HLANG Version 2.0 FULL RELEASE
 A open source java based shell created by yours truly.
 
 This repo also comes in with a built in programming language called "HLANG" (Henry's Language).
@@ -11,7 +11,8 @@ This repo will have a built in shell called "HSh" or Henry's Shell for short.
 
 <img width="202" height="151" alt="Frame 2" src="https://github.com/user-attachments/assets/5e4c374d-422e-4d8a-865e-76b2b57d401d" />
 
-HLANG 2.0 is currently being built right now. The older version is in a different directory.
+# Installation
+[HLANG Installation](https://github.com/HenryLiu114/The-HLANG-Compiler-and-Terminal/blob/main/HLANG%202.0/Output/HLANG-Setup.exe)
 
 # Note To Users:
 Hello,
@@ -40,6 +41,7 @@ To run any hlang file, type:
 # HLANG Changlog:
 | HLANG Version | Date | Changes |
 |---------|------|---------|
+| v2.0 + HSh2.0 | June 3, 2026 | Offical Release and Installer. |
 | HSh2.0pre | June 3, 2026 | New and Improved Henry Shell. |
 | v2.0b | June 3, 2026 | Input Functionality. |
 | v2.0.3a | June 3, 2026 | Lists and List Commands. |
@@ -63,7 +65,6 @@ To run any hlang file, type:
 # Future Plans:
 | HLANG Version | Date | Changes |
 |---------|------|---------|
-| v2.0 + HSh2.0 | Expected June 5, 2026 | Offical Release. |
 | Web1.0 | SOON | Online Compiler + Website |
 | Web1.1 | SOON | Offical Manual |
 | v2.1 | Soon | Mapcar. |
