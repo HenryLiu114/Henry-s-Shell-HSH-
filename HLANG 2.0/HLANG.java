@@ -1073,7 +1073,7 @@ public class HLANG {
             HashMap<String, HLangFunct> functions)
             throws Exception {
         ArrayList<String> compiledLines = customSplit(cmd);
-        // System.out.println("Split: " + compiledLines);
+        //System.out.println("Split: " + compiledLines);
         for (int i = 0; i < compiledLines.size(); i++) {
             SingleLineCompiler(compiledLines.get(i) + ".", variables, ValStack, functions);
         }
@@ -1117,10 +1117,5 @@ public class HLANG {
             res.add(cur);
         }
         return res;
-    }
-
-    public static void main(String[] args) throws Exception {
-        String cmd = "";
-        Compiler(cmd, new HashMap<>(), new Stack<>(), new HashMap<>());
     }
 }

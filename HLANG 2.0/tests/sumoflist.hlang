@@ -8,4 +8,4 @@
         }
         {/print /R.}
 }.
-/usefun sumoflist ([1, 2, 3, 4] 0).
+/usefun sumoflist ([1, 2, 3, 4, 10] 0).

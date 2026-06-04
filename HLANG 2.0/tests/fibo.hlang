@@ -1,6 +1,6 @@
 /defun fibo (x1 x2 times) {
-    /if (/gt times 0) 
+    /if (/gt /times 0) 
         {/var t /x1. /var x1 /x2. /var x2 /add /x1 /t. /var times /sub /times 1. /usefun fibo (/x1 /x2 /times).} 
         {/print /x2.}
 }. 
-/usefun fibo (0 1 5).
+/usefun fibo (0 1 10).
