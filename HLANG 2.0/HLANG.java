@@ -1008,7 +1008,7 @@ public class HLANG {
                     variables.put((String) varname.data, Lexer(sc.nextLine() + ".").get(0));
                     break;
                 case TokenType.mapcar:
-                    //Sometime Soon
+                    // Sometime Soon
                     break;
                 default:
                     break;
@@ -1081,41 +1081,50 @@ public class HLANG {
 
     private static ArrayList<String> customSplit(String cmd) {
         ArrayList<String> res = new ArrayList<>();
-        boolean ignoreProg = false;
-        boolean ignoreAtt = false;
-        boolean ignoreStr = false;
-        String cur = "";
+        StringBuilder cur = new StringBuilder();
+
+        int braceDepth = 0;
+        int parenDepth = 0;
+        boolean inStr = false;
+
         for (int i = 0; i < cmd.length(); i++) {
-            char curchar = cmd.charAt(i);
-            if (curchar == '"') {
-                ignoreStr = !ignoreStr;
-                cur += curchar;
-            } else if (curchar == '(') {
-                ignoreAtt = true;
-                cur += curchar;
-            } else if (curchar == '{') {
-                ignoreProg = true;
-                cur += curchar;
-            } else if (curchar == ')') {
-                ignoreAtt = false;
-                cur += curchar;
-            } else if (curchar == '}') {
-                ignoreProg = false;
-                cur += curchar;
-            } else if (curchar == '.') {
-                if (ignoreProg || ignoreAtt || ignoreStr) {
-                    cur += curchar;
-                } else {
-                    res.add(cur);
-                    cur = "";
-                }
-            } else {
-                cur += curchar;
+            char c = cmd.charAt(i);
+
+            if (c == '"') {
+                inStr = !inStr;
+                cur.append(c);
+                continue;
             }
+
+            if (!inStr) {
+                if (c == '{')
+                    braceDepth++;
+                else if (c == '}')
+                    braceDepth--;
+                else if (c == '(')
+                    parenDepth++;
+                else if (c == ')')
+                    parenDepth--;
+
+                // split ONLY at top level
+                if ((c == '.' || c == ',') && braceDepth == 0 && parenDepth == 0) {
+                    String token = cur.toString().trim();
+                    if (!token.isEmpty())
+                        res.add(token);
+                    cur.setLength(0);
+                    continue;
+                }
+            }
+
+            cur.append(c);
         }
+
         if (cur.length() > 0) {
-            res.add(cur);
+            String token = cur.toString().trim();
+            if (!token.isEmpty())
+                res.add(token);
         }
+
         return res;
     }
 }

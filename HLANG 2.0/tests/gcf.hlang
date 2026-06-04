@@ -1,0 +1,16 @@
+/defun gcf (a b) {
+    /if (/gt /b /a) 
+        {/usefun gcf (/b /a).} 
+        {
+            /if (/eq /b 0) 
+                {/print /a.} 
+                {
+                    /var t /a.
+                    /var a /b.
+                    /var b /mod /t /b.
+                    /usefun gcf (/a /b).
+                }.
+        }.
+    /print "hi mom".
+}.
+/usefun gcf (12 20).

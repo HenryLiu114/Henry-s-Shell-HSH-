@@ -41,6 +41,15 @@ Source: "C:\Users\Henry\OneDrive\Desktop\HLang Source Files\Henry-s-Shell-HSH-\H
 [Tasks]
 Name: "addtopath"; Description: "Add HLANG to PATH"; Flags: checkedonce
 
+[Registry]
+Root: HKCU; Subkey: "Software\Classes\.hlang"; ValueType: string; ValueName: ""; ValueData: "HLANGFile"; Flags: uninsdeletevalue
+
+Root: HKCU; Subkey: "Software\Classes\HLANGFile"; ValueType: string; ValueName: ""; ValueData: "HLANG Source File"; Flags: uninsdeletekey
+
+Root: HKCU; Subkey: "Software\Classes\HLANGFile\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\icon.ico"
+
+Root: HKCU; Subkey: "Software\Classes\HLANGFile\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\hsh.bat"" ""%1"""
+
 [Code]
 procedure EnvAddPath(Path: string);
 var

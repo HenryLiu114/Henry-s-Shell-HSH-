@@ -21,8 +21,12 @@ public class HSH {
         return res.toString();
     }
 
+    //public static void main(String[] args) throws FileNotFoundException, Exception {
+        //String stuff = readFromFile(args[0]);
+        //HLANG.Compiler(stuff, new HashMap<>(), new Stack<>(), new HashMap<>());
+    //}
     public static void main(String[] args) throws FileNotFoundException, Exception {
-        String stuff = readFromFile(args[0]);
+        String stuff = readFromFile("./tests/gcf.hlang");
         HLANG.Compiler(stuff, new HashMap<>(), new Stack<>(), new HashMap<>());
     }
 }
