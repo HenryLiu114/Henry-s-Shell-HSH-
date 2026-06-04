@@ -1,5 +1,5 @@
 # HLANG Version 2.0.2 FULL RELEASE
-A open source java based shell created by yours truly.
+A open source java based shell created by Henry Liu.
 
 This repo also comes in with a built in programming language called "HLANG" (Henry's Language).
 
