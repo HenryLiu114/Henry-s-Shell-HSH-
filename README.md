@@ -1,4 +1,4 @@
-# HLANG Version 2.0.3 FULL RELEASE
+# HLANG Version 2.1 FULL RELEASE
 A open source java based shell created by yours truly.
 
 This repo also comes in with a built in programming language called "HLANG" (Henry's Language).
@@ -41,6 +41,7 @@ To run any hlang file, type:
 # HLANG Changlog:
 | HLANG Version | Date | Changes |
 |---------|------|---------|
+| v2.1 | June 4, 2026 | Doesn't require you to install java anymore. |
 | v2.0.3 | June 4, 2026 | Added Commands to help create and edit HLANG files (callo and eallo). |
 | v2.0.2 | June 3, 2026 | Removed Developer Mode. |
 | v2.0.1 | June 3, 2026 | Fixed a Bug where If Statements cannot handle periods. |
