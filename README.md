@@ -12,7 +12,15 @@ This repo will have a built in shell called "HSh" or Henry's Shell for short.
 <img width="202" height="151" alt="Frame 2" src="https://github.com/user-attachments/assets/5e4c374d-422e-4d8a-865e-76b2b57d401d" />
 
 # Installation
-[HLANG Installation Windows](https://github.com/HenryLiu114/The-HLANG-Compiler-and-Terminal/releases/tag/Windows_Release_2.1)
+| Release | HLANG Version | Source |
+|---------|------|---------|
+| Windows | v2.1 | [HLANG Installation Windows](https://github.com/HenryLiu114/The-HLANG-Compiler-and-Terminal/releases/tag/Windows_Release_2.1) |
+| Debian Linux | v2.1 | [HLANG Installation Debian Linux](https://github.com/HenryLiu114/The-HLANG-Compiler-and-Terminal/releases/tag/Ubuntu_Debian_Release_2.1) |
+| Red Hat | N/A | N/A |
+| Arch Linux | N/A | N/A |
+| MacOS | N/A | N/A |
+
+
 
 # Note To Users:
 Hello,
@@ -71,4 +79,4 @@ To run any hlang file, type:
 |---------|------|---------|
 | Web1.0 | SOON | Online Compiler + Website |
 | Web1.1 | SOON | Offical Manual |
-| v2.1 | Soon | Mapcar. |
+| v2.2 | Soon | Mapcar. |
