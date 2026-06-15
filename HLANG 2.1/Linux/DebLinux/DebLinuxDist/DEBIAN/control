@@ -1,8 +1,9 @@
 Package: hlang
-Version: 2.1
-Section: devel
+Version: 1.0.0
+Section: utils
 Priority: optional
 Architecture: all
 Maintainer: Henry Liu
-Depends: default-jre
-Description: HLANG programming language and shell
+Description: HLANG Compiler and runtime system
+ A custom programming language compiler and shell system.
+ 

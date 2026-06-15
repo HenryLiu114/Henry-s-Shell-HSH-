@@ -1,3 +1,5 @@
 #!/bin/bash
 
-java -jar /usr/share/hlang/HLANG.jar "$@"
+BASE="/usr/hlang/share/HLANGCompiler"
+
+exec "$BASE/bin/HLANGCompiler" "$@"

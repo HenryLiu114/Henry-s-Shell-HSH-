@@ -1,0 +1,3 @@
+Open up ubuntu: powershell type "wsl"
+
+cd 
