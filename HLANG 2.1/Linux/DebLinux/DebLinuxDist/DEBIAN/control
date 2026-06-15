@@ -1,0 +1,8 @@
+Package: hlang
+Version: 2.1
+Section: devel
+Priority: optional
+Architecture: all
+Maintainer: Henry Liu
+Depends: default-jre
+Description: HLANG programming language and shell
