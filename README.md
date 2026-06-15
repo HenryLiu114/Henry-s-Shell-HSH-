@@ -12,7 +12,7 @@ This repo will have a built in shell called "HSh" or Henry's Shell for short.
 <img width="202" height="151" alt="Frame 2" src="https://github.com/user-attachments/assets/5e4c374d-422e-4d8a-865e-76b2b57d401d" />
 
 # Installation
-[HLANG Installation](https://drive.google.com/file/d/1nO80cTusdJxV2upLQlenJSXdswsXYjDT/view?usp=sharing)
+[HLANG Installation Windows]([https://drive.google.com/file/d/1nO80cTusdJxV2upLQlenJSXdswsXYjDT/view?usp=sharing](https://github.com/HenryLiu114/The-HLANG-Compiler-and-Terminal/releases/tag/Windows_Release_2.1))
 
 # Note To Users:
 Hello,
