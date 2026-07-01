@@ -49,6 +49,7 @@ To run any hlang file, type:
 # HLANG Changlog:
 | HLANG Version | Date | Changes |
 |---------|------|---------|
+| Web0.1 | June 30, 2026 | Added Download Page and Home page for Website |
 | v2.1 | June 4, 2026 | Doesn't require you to install java anymore. |
 | v2.0.3 | June 4, 2026 | Added Commands to help create and edit HLANG files (callo and eallo). |
 | v2.0.2 | June 3, 2026 | Removed Developer Mode. |
