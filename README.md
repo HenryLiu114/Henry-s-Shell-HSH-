@@ -79,4 +79,5 @@ To run any hlang file, type:
 |---------|------|---------|
 | Web1.0 | SOON | Online Compiler + Website |
 | Web1.1 | SOON | Offical Manual |
-| v2.2 | Soon | Mapcar. |
+| v2.2 | Soon | String operations and universal arithmitic logic handling. |
+| v2.3 | Soon | Mapcar. |
