@@ -2,4 +2,4 @@
 
 BASE="/usr/hlang/share/HLANGCompiler"
 
-exec "$BASE/bin/HLANGCompiler" "$@"
+exec "$BASE/HLANGCompiler" "$@"

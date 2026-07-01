@@ -1,0 +1,104 @@
+.navbar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 55px;
+    background: white;
+    border: 2px solid black;
+    font-family: "Sansation", sans-serif;
+}
+
+.homebutton {
+    height: 50px;
+    cursor: pointer;
+}
+
+.selectionbuttons {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.tabbutton{
+    height: 50px;
+    margin-left: auto;
+    cursor: pointer;
+}
+
+.page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: "Sansation", sans-serif;
+    position: relative;
+}
+
+.header1{
+    font-size: 80px;
+    text-align: center;
+    padding-top: 70px;
+}
+
+.header2{
+    font-size: 50px;
+    text-align: center;
+}
+
+.line {
+    width: 90%;
+    border: none;
+    height: 2px;
+    margin: 20px auto;
+    background-color: black;
+}
+
+.options{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-top: 40px;
+    gap: 40px;
+}
+
+.optionbox{
+    display: flex;
+    width: 220px;
+    height: 220px;
+    border: 2px solid black;
+    box-shadow: 5px 5px 10px 2px rgba(0, 0, 0, 0.3);
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    text-decoration: none;
+    color: black;
+    transition: background-color 0.5s ease;
+    border-radius: 10px;
+}
+
+.optionbox:hover{
+    background-color: rgb(197, 197, 197);
+}
+
+.optionimg{
+    width: 120px;
+    height: 120px;
+}
+
+@font-face {
+    font-family: "Sansation";
+    src: url("fonts/Sansation-Light.ttf") format("truetype");
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Sansation-Bold";
+    src: url("fonts/Sansation-Regular.ttf") format("truetype");
+    font-weight: 300;
+    font-style: normal;
+}

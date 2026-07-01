@@ -2,15 +2,62 @@
 <html>
 
 <head>
-    <img src="SimpleLogo.png">
+    <link rel="icon" type="image/png" href="imgs/SimpleLogo.png">
     <title>HLANG Offical Site</title>
 </head>
 
 <body>
+    <link rel="stylesheet" href="styles.css">
 
-    <h1>This is a Heading</h1>
-    <p>This is a paragraph.</p>
-
+    
+    <div class="page">
+        <div class = "header1">Welcome to the HLANG Offical Site</div>
+        <div class="line"></div>
+        <div class = "header2">HLANG Version: 2.1</div>
+        <div class = "options">
+            <a href="./downloadpage/index.html" class = "optionbox">
+                <div class = "optionimg">
+                    <img src="imgs/download-solid-full.svg">
+                </div>
+                <h2>Download the Compiler</h2>
+            </a>
+            <a href="./changelogpage/index.html" class = "optionbox">
+                <div class = "optionimg">
+                    <img src="imgs/list-solid-full.svg">
+                </div>
+                <h2>Changelogs</h2>
+            </a>
+            <a href="./manualpage/index.html" class = "optionbox">
+                <div class = "optionimg">
+                    <img src="imgs/book-solid-full.svg">
+                </div>
+                <h2>Manuals</h2>
+            </a>
+            <a href="./aboutpage/index.html" class = "optionbox">
+                <div class = "optionimg">
+                    <img class = "optionimg" src="imgs/SimpleLogo.png">
+                </div>
+                <h2>About</h2>
+            </a>
+            <a href="https://github.com/HenryLiu114/The-HLANG-Compiler-and-Terminal" class = "optionbox">
+                <div class = "optionimg">
+                    <img src="imgs/github-brands-solid-full.svg">
+                </div>
+                <h2>Github Page</h2>
+            </a>
+            <a href="./compilerpage/index.html" class = "optionbox">
+                <div class = "optionimg">
+                    <img src="imgs/code-solid-full.svg">
+                </div>
+                <h2>Online Compiler (WIP)</h2>
+            </a>
+        </div>
+    </div>
+    <div id="navbar"></div>
+    <script src="script.js"></script>
+    <script>
+        document.getElementById("navbar").innerHTML = navbar();
+    </script>
 </body>
 
 </html>

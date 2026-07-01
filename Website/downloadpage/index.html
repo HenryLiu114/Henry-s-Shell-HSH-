@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="icon" type="image/png" href="../imgs/SimpleLogo.png">
+    <title>Downloads</title>
+</head>
+
+<body>
+    <link rel="stylesheet" href="styles.css">
+
+    <div class = "page">
+        <div class = "header1">
+            Download HLANG
+        </div>
+        <div class = "line"></div>
+        <div class = "header2">Select an Download Option</div>
+        <div class = "options">
+            <div class = "optionbox">
+                <img class = "optionimg" src="../imgs/windows.png">
+                <a href = "./downloads/HLANG-Setup.exe" class = "windowsbutton" download>
+                    <div class = "buttontext">Download Installer (.exe)</div>
+                </a>
+                <a href = "./downloads/The-HLANG-Compiler-and-Terminal-Windows_Release_2.1.zip" class = "windowsbutton" download>
+                    <div class = "buttontext">Download Source Code (.zip)</div>
+                </a>
+            </div>
+            <div class = "optionbox">
+                <img class = "optionimg" src="../imgs/desbian.png">
+                <a href = "" class = "desbianbutton" download>
+                    <div class = "buttontext">Work in Progress, .deb files soon!</div>
+                </a>
+                <a href = "./downloads/The-HLANG-Compiler-and-Terminal-Windows_Release_2.1.zip" class = "desbianbutton" download>
+                    <div class = "buttontext">Download Source Code (.zip)</div>
+                </a>
+            </div>
+            <div class = "optionbox">
+                <img class = "optionimg" src="../imgs/redhat.webp">
+                <a href = "" class = "rhbutton" download>
+                    <div class = "buttontext">Work in Progress, .deb files soon!</div>
+                </a>
+                <a href = "./downloads/The-HLANG-Compiler-and-Terminal-Windows_Release_2.1.zip" class = "rhbutton" download>
+                    <div class = "buttontext">Download Source Code (.zip)</div>
+                </a>
+            </div>
+            <div class = "optionbox">
+                <img class = "optionimg" src="../imgs/archlinux.webp">
+                <a href = "" class = "albutton" download>
+                    <div class = "buttontext">Work in Progress, .deb files soon!</div>
+                </a>
+                <a href = "./downloads/The-HLANG-Compiler-and-Terminal-Windows_Release_2.1.zip" class = "albutton" download>
+                    <div class = "buttontext">Download Source Code (.zip)</div>
+                </a>
+            </div>
+            <div class = "optionbox">
+                <img class = "optionimg" src="../imgs/mac.png">
+                <a href = "" class = "macbutton" download>
+                    <div class = "buttontext">Work in Progress, .deb files soon!</div>
+                </a>
+                <a href = "./downloads/The-HLANG-Compiler-and-Terminal-Windows_Release_2.1.zip" class = "macbutton" download>
+                    <div class = "buttontext">Download Source Code (.zip)</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="navbar"></div>
+
+    <script src="script.js"></script>
+    <script>
+        document.getElementById("navbar").innerHTML = navbar();
+    </script>
+</body>
+
+</html>
