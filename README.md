@@ -49,6 +49,7 @@ To run any hlang file, type:
 # HLANG Changlog:
 | HLANG Version | Date | Changes |
 |---------|------|---------|
+| Web0.2 | June 30, 2026 | Added the Changelog Page and some future plans |
 | Web0.1 | June 30, 2026 | Added Download Page and Home page for Website |
 | v2.1 | June 4, 2026 | Doesn't require you to install java anymore. |
 | v2.0.3 | June 4, 2026 | Added Commands to help create and edit HLANG files (callo and eallo). |
@@ -80,5 +81,5 @@ To run any hlang file, type:
 |---------|------|---------|
 | Web1.0 | SOON | Online Compiler + Website |
 | Web1.1 | SOON | Offical Manual |
-| v2.2 | Soon | String operations and universal arithmitic logic handling. |
-| v2.3 | Soon | Mapcar. |
+| v2.2 | Soon | String and Array operations and universal arithmitic logic handling. |
+| v2.3 | Soon | CSV Functionality. |

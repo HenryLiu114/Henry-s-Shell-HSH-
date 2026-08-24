@@ -7,7 +7,67 @@
 </head>
 
 <body>
-    
+    <link rel="stylesheet" href="styles.css">
+
+    <div class="page">
+        <div class="header2">
+            HLANG Version Changelogs
+        </div>
+        <div class="table">
+            <div id="Header"></div>
+            <div id="v2_1"></div>
+            <div id="v2_0_3"></div>
+            <div id="v2_0_2"></div>
+            <div id="v2_0_1"></div>
+            <div id="v2_0"></div>
+            <div id="v2_0_b"></div>
+            <div id="v2_0_3a"></div>
+            <div id="v2_0_2a"></div>
+            <div id="v2_0_1a"></div>
+            <div id="v2_0"></div>
+            <div id="v1_1"></div>
+            <div id="v1_0"></div>
+            <div id="v0_6"></div>
+            <div id="v0_55"></div>
+            <div id="v0_5"></div>
+            <div id="v0_4"></div>
+            <div id="v0_35"></div>
+            <div id="v0_3"></div>
+            <div id="v0_2"></div>
+            <div id="v0_1b"></div>
+            <div id="v0_1a"></div>
+            <div id="v0"></div>
+        </div>
+
+            <div id="navbar"></div>
+
+            <script src="script.js"></script>
+            <script>
+                document.getElementById("navbar").innerHTML = navbar();
+                document.getElementById("Header").innerHTML = addrow("Version","Date", "Description");
+                document.getElementById("v2_1").innerHTML = addrow("v2.1","June 4, 2026", "Doesn't require you to install java anymore.");
+                document.getElementById("v2_0_3").innerHTML = addrow("v2.0.3","June 4, 2026", "Added Commands to help create and edit HLANG files (callo and eallo).");
+                document.getElementById("v2_0_2").innerHTML = addrow("v2.0.2","June 3, 2026", "Removed Developer Mode.");
+                document.getElementById("v2_0_1").innerHTML = addrow("v2.0.1","June 3, 2026", "Fixed a Bug where If Statements cannot handle periods.");
+                document.getElementById("v2_0").innerHTML = addrow("v2.0","June 3, 2026", "Offical Release and Installer.");
+                document.getElementById("v2_0_b").innerHTML = addrow("v2.0b","June 3, 2026", "Input Functionality.");
+                document.getElementById("v2_0_3a").innerHTML = addrow("v2.0.3a","June 3, 2026", "Lists and List Commands.");
+                document.getElementById("v2_0_2a").innerHTML = addrow("v2.0.2a","June 2, 2026", "Recursion + Functions.");
+                document.getElementById("v2_0_1a").innerHTML = addrow("v2.0.1a","June 2, 2026", "Nested ifs and regular if statements.");
+                document.getElementById("v2_0").innerHTML = addrow("v2.0a","June 1, 2026", "Began rebuilding the lanaguage from scratch.");
+                document.getElementById("v1_1").innerHTML = addrow("v1.1","Apr 15, 2026", "Build the H Shell that can take HLANG Code and custom commands.");
+                document.getElementById("v1_0").innerHTML = addrow("v1.0","Apr 15, 2026", "List Operations: /cdr, /cons, /null, and ? (nullvalue).");
+                document.getElementById("v0_6").innerHTML = addrow("v0.6","Apr 14, 2026", "List Recursion Works, and added some basic list commands: /newlist, /consvar, /uselist. Recursion now takes in either a preset list () or a list variable /newlist.");
+                document.getElementById("v0_55").innerHTML = addrow("v0.55","Apr 14, 2026", "Basic Recursion Implmented.");
+                document.getElementById("v0_5").innerHTML = addrow("v0.5","Apr 13, 2026", "Functions: /usefun, /defun.");
+                document.getElementById("v0_4").innerHTML = addrow("v0.4","Apr 8, 2026", "Added Conditionals (and, or, not).");
+                document.getElementById("v0_35").innerHTML = addrow("v0.35","Apr 6, 2026", "Nested If Statements now work.");
+                document.getElementById("v0_3").innerHTML = addrow("v0.3","Apr 3, 2026", "Implmented If Statements and Progn.");
+                document.getElementById("v0_2").innerHTML = addrow("v0.2","Apr 2, 2026", "Implemented the basic compiler with arithmetic and comparision commands, variables, lists, as well as print and concatination.");
+                document.getElementById("v0_1b").innerHTML = addrow("v0.1b","Apr 1, 2026", "Implemented the Parser and Interpreter, using a Tree and a Depth First Search");
+                document.getElementById("v0_1a").innerHTML = addrow("v0.1a","Mar 29, 2026", "Archived the first versions of HSh to legacy, and started work on the HLANG Programming Language");
+                document.getElementById("v0").innerHTML = addrow("v0","Mar 25, 2026", "Early Version of HSh was developed.");
+            </script>
 </body>
 
 </html>
