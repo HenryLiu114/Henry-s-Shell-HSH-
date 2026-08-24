@@ -49,19 +49,19 @@ To run any hlang file, type:
 # HLANG Changlog:
 | HLANG Version | Date | Changes |
 |---------|------|---------|
-| Web0.2 | June 30, 2026 | Added the Changelog Page and some future plans |
-| Web0.1 | June 30, 2026 | Added Download Page and Home page for Website |
-| v2.1 | June 4, 2026 | Doesn't require you to install java anymore. |
-| v2.0.3 | June 4, 2026 | Added Commands to help create and edit HLANG files (callo and eallo). |
-| v2.0.2 | June 3, 2026 | Removed Developer Mode. |
-| v2.0.1 | June 3, 2026 | Fixed a Bug where If Statements cannot handle periods. |
-| v2.0 + HSh2.0 | June 3, 2026 | Offical Release and Installer. |
-| HSh2.0pre | June 3, 2026 | New and Improved Henry Shell. |
-| v2.0b | June 3, 2026 | Input Functionality. |
-| v2.0.3a | June 3, 2026 | Lists and List Commands. |
-| v2.0.2a | June 2, 2026 | Recursion + Functions. |
-| v2.0.1a | June 2, 2026 | Nested ifs and regular if statements. |
-| v2.0a | June 1, 2026 | Began rebuilding the lanaguage from scratch. |
+| Web0.2 | Aug 24, 2026 | Added the Changelog Page and some future plans |
+| Web0.1 | Jun 30, 2026 | Added Download Page and Home page for Website |
+| v2.1 | Jun 4, 2026 | Doesn't require you to install java anymore. |
+| v2.0.3 | Jun 4, 2026 | Added Commands to help create and edit HLANG files (callo and eallo). |
+| v2.0.2 | Jun 3, 2026 | Removed Developer Mode. |
+| v2.0.1 | Jun 3, 2026 | Fixed a Bug where If Statements cannot handle periods. |
+| v2.0 + HSh2.0 | Jun 3, 2026 | Offical Release and Installer. |
+| HSh2.0pre | Jun 3, 2026 | New and Improved Henry Shell. |
+| v2.0b | Jun 3, 2026 | Input Functionality. |
+| v2.0.3a | Jun 3, 2026 | Lists and List Commands. |
+| v2.0.2a | Jun 2, 2026 | Recursion + Functions. |
+| v2.0.1a | Jun 2, 2026 | Nested ifs and regular if statements. |
+| v2.0a | Jun 1, 2026 | Began rebuilding the lanaguage from scratch. |
 | v1.1 + HSh1.0 | Apr 15, 2026 | Build the H Shell that can take HLANG Code and custom commands. |
 | v1.0 | Apr 15, 2026 | List Operations: /cdr, /cons, /null, and ? (nullvalue). |
 | v0.6 | Apr 14, 2026 | List Recursion Works, and added some basic list commands: /newlist, /consvar, /uselist. Recursion now takes in either a preset list () or a list variable /newlist. |
