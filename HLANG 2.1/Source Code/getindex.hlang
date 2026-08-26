@@ -1,0 +1,5 @@
+/var x ["ABC123,hehehehaha", 1, 2].
+/cdr x x.
+/cdr x x.
+/car x y.
+/print /y.

@@ -37,7 +37,8 @@ public class HLANG {
         floating,
         str,
         bool,
-        list
+        list,
+        wildcard
     }
 
     private static class Token<T> {
@@ -272,6 +273,9 @@ public class HLANG {
                     case "/mapcar":
                         lexedList.add(new Token<String>(curStr, TokenType.mapcar));
                         break;
+                    case "/?":
+                        lexedList.add(new Token<String>(curStr, TokenType.wildcard));
+                        break;
                     default:
                         lexedList.add(new Token<String>(curStr, TokenType.var));
                         break;
@@ -318,19 +322,30 @@ public class HLANG {
         StringBuilder current = new StringBuilder();
 
         int depth = 0;
+        boolean inStr = false;
 
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
 
-            if (c == '[') {
-                depth++;
+            if (c == '"') {
+                inStr = !inStr;
                 current.append(c);
-            } else if (c == ']') {
-                depth--;
-                current.append(c);
-            } else if (c == ',' && depth == 0) {
-                result.add(current.toString().trim());
-                current.setLength(0);
+                continue;
+            }
+
+            if (!inStr) {
+                if (c == '[') {
+                    depth++;
+                    current.append(c);
+                } else if (c == ']') {
+                    depth--;
+                    current.append(c);
+                } else if (c == ',' && depth == 0) {
+                    result.add(current.toString().trim());
+                    current.setLength(0);
+                } else {
+                    current.append(c);
+                }
             } else {
                 current.append(c);
             }
@@ -470,16 +485,16 @@ public class HLANG {
                                 String v2 = (String) X2.data;
                                 if (X1.type == TokenType.str) {
                                     String v1 = (String) X1.data;
-                                    ValStack.push(new Token<>(v2 + v1, TokenType.str));
+                                    ValStack.push(new Token<>(v1 + v2, TokenType.str));
                                 } else if (X1.type == TokenType.integer) {
                                     int v1 = (Integer) X1.data;
-                                    ValStack.push(new Token<>(v2 + v1, TokenType.str));
+                                    ValStack.push(new Token<>(v1 + v2, TokenType.str));
                                 } else if (X1.type == TokenType.floating) {
                                     double v1 = (Double) X1.data;
-                                    ValStack.push(new Token<>(v2 + v1, TokenType.str));
+                                    ValStack.push(new Token<>(v1 + v2, TokenType.str));
                                 } else if (X1.type == TokenType.bool) {
                                     boolean v1 = (Boolean) X1.data;
-                                    ValStack.push(new Token<>(v2 + v1, TokenType.str));
+                                    ValStack.push(new Token<>(v1 + v2, TokenType.str));
                                 }
                             } else {
                                 throw new Exception("Cannot Compile: Addition Type Error!");
@@ -508,6 +523,15 @@ public class HLANG {
                                 double v2 = (Double) X2.data;
 
                                 ValStack.push(new Token<>(v1 - v2, TokenType.floating));
+                            } else if (X1.type == TokenType.str && X2.type == TokenType.integer) {
+                                String v1 = (String) X1.data;
+                                int v2 = (int) X2.data;
+                                String result = new StringBuilder(v1).deleteCharAt(v2).toString();
+                                ValStack.push(new Token<>(result, TokenType.str));
+                            } else if (X1.type == TokenType.integer && X2.type == TokenType.str) {
+                                String v1 = (String) X2.data;
+                                int v2 = (int) X1.data;
+                                ValStack.push(new Token<>(v1.charAt(v2) + "", TokenType.str));
                             } else {
                                 throw new Exception("Cannot Compile: Subtraction Type Error!");
                             }
@@ -562,6 +586,16 @@ public class HLANG {
                                 double v2 = (Double) X2.data;
 
                                 ValStack.push(new Token<>(v1 / v2, TokenType.floating));
+                            } else if (X1.type == TokenType.str && X2.type == TokenType.integer) {
+                                String v1 = (String) X1.data;
+                                int v2 = (int) X2.data;
+
+                                ValStack.push(new Token<>(v1, TokenType.floating));
+                            } else if (X1.type == TokenType.integer && X2.type == TokenType.str) {
+                                int v1 = (int) X1.data;
+                                String v2 = (String) X2.data;
+
+                                ValStack.push(new Token<>(v1, TokenType.floating));
                             } else {
                                 throw new Exception("Cannot Compile: Division Type Error!");
                             }
@@ -989,7 +1023,6 @@ public class HLANG {
                     store = ValStack.pop();
                     @SuppressWarnings("unchecked")
                     LinkedList<Token<?>> original = (LinkedList<Token<?>>) listToken.data;
-
                     original.removeFirst();
                     variables.put((String) store.data, new Token<>(original, TokenType.list));
                     break;
@@ -1073,8 +1106,9 @@ public class HLANG {
             HashMap<String, HLangFunct> functions)
             throws Exception {
         ArrayList<String> compiledLines = customSplit(cmd);
-        //System.out.println("Split: " + compiledLines);
+        // System.out.println("Split: " + compiledLines);
         for (int i = 0; i < compiledLines.size(); i++) {
+            // System.out.println(compiledLines.get(i));
             SingleLineCompiler(compiledLines.get(i) + ".", variables, ValStack, functions);
         }
     }
@@ -1085,6 +1119,7 @@ public class HLANG {
 
         int braceDepth = 0;
         int parenDepth = 0;
+        int arrDepth = 0;
         boolean inStr = false;
 
         for (int i = 0; i < cmd.length(); i++) {
@@ -1105,9 +1140,13 @@ public class HLANG {
                     parenDepth++;
                 else if (c == ')')
                     parenDepth--;
+                else if (c == '[')
+                    arrDepth++;
+                else if (c == ']')
+                    arrDepth--;
 
                 // split ONLY at top level
-                if ((c == '.' || c == ',') && braceDepth == 0 && parenDepth == 0) {
+                if ((c == '.' || c == ',') && braceDepth == 0 && parenDepth == 0 && arrDepth == 0 && !inStr) {
                     String token = cur.toString().trim();
                     if (!token.isEmpty())
                         res.add(token);
