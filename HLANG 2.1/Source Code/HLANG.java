@@ -590,12 +590,12 @@ public class HLANG {
                                 String v1 = (String) X1.data;
                                 int v2 = (int) X2.data;
 
-                                ValStack.push(new Token<>(v1, TokenType.floating));
+                                ValStack.push(new Token<>(v1.substring(0, v2), TokenType.floating));
                             } else if (X1.type == TokenType.integer && X2.type == TokenType.str) {
                                 int v1 = (int) X1.data;
                                 String v2 = (String) X2.data;
 
-                                ValStack.push(new Token<>(v1, TokenType.floating));
+                                ValStack.push(new Token<>(v2.substring(v1,v2.length()), TokenType.floating));
                             } else {
                                 throw new Exception("Cannot Compile: Division Type Error!");
                             }
