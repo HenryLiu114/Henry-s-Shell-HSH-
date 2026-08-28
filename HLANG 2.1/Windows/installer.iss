@@ -3,7 +3,7 @@
 ; Non-commercial use only
 
 #define MyAppName "HLANG Compiler"
-#define MyAppVersion "2.1"
+#define MyAppVersion "2.3"
 #define MyAppPublisher "Henry Liu"
 #define MyAppURL "N/A"
 
@@ -34,7 +34,7 @@ SetupIconFile=icon.ico
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: "C:\Users\Henry\OneDrive\Desktop\HLang Source Files\Henry-s-Shell-HSH-\HLANG 2.1\Windows\*"; \
+Source: "C:\Users\Henry Liu\Desktop\HLANG Source\The-HLANG-Compiler-and-Terminal\HLANG 2.1\Windows\*"; \
 DestDir: "{app}"; \
 Flags: ignoreversion recursesubdirs createallsubdirs
 
