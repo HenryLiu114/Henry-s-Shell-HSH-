@@ -496,6 +496,26 @@ public class HLANG {
                                     boolean v1 = (Boolean) X1.data;
                                     ValStack.push(new Token<>(v1 + v2, TokenType.str));
                                 }
+                            }
+                            else if (X1.type == TokenType.list && X2.type == TokenType.list){
+                                @SuppressWarnings("unchecked")
+                                LinkedList<Token<?>> v1 = (LinkedList<Token<?>>) X1.data;
+                                @SuppressWarnings("unchecked")
+                                LinkedList<Token<?>> v2 = (LinkedList<Token<?>>) X2.data;
+                                v1.addAll(v2);
+                                ValStack.push(new Token<>(v1, TokenType.list));
+                            }
+                            else if (X1.type == TokenType.list){
+                                @SuppressWarnings("unchecked")
+                                LinkedList<Token<?>> v1 = (LinkedList<Token<?>>) X1.data;
+                                v1.addLast(X2);
+                                ValStack.push(new Token<>(v1, TokenType.list));
+                            }
+                            else if (X2.type == TokenType.list){
+                                @SuppressWarnings("unchecked")
+                                LinkedList<Token<?>> v2 = (LinkedList<Token<?>>) X2.data;
+                                v2.addFirst(X1);
+                                ValStack.push(new Token<>(v2, TokenType.list));
                             } else {
                                 throw new Exception("Cannot Compile: Addition Type Error!");
                             }
@@ -532,7 +552,8 @@ public class HLANG {
                                 String v1 = (String) X2.data;
                                 int v2 = (int) X1.data;
                                 ValStack.push(new Token<>(v1.charAt(v2) + "", TokenType.str));
-                            } else {
+                            } 
+                            else {
                                 throw new Exception("Cannot Compile: Subtraction Type Error!");
                             }
                             break;
@@ -559,7 +580,40 @@ public class HLANG {
                                 double v2 = (Double) X2.data;
 
                                 ValStack.push(new Token<>(v1 * v2, TokenType.floating));
-                            } else {
+                            } else if (X1.type == TokenType.str && X2.type == TokenType.integer) {
+                                String v1 = (String) X1.data;
+                                int v2 = (int) X2.data;
+                                String muled = "";
+
+                                for (int i = 0; i < v2; i++) {
+                                    muled += v1;
+                                }
+
+                                ValStack.push(new Token<>(muled, TokenType.str));
+                            } else if (X1.type == TokenType.integer && X2.type == TokenType.str) {
+                                int v1 = (int) X1.data;
+                                String v2 = (String) X2.data;
+                                String muled = "";
+                                for (int i = 0; i < v1; i++) {
+                                    muled += v1;
+                                }
+
+                                ValStack.push(new Token<>(muled, TokenType.str));
+                            } else if (X1.type == TokenType.str && X2.type == TokenType.str) {
+                                String v1 = (String) X1.data;
+                                String v2 = (String) X2.data;
+
+                                ValStack.push(new Token<>(countSubstringOccurrences(v1, v2), TokenType.str));
+                            } 
+                            else if (X1.type == TokenType.str && X2.type == TokenType.wildcard) {
+                                String v1 = (String) X1.data;
+                                String v2 = (String) X2.data;
+                                ValStack.push(new Token<>(v1.length(), TokenType.integer));
+                            }
+                            else if (X1.type == TokenType.wildcard && X2.type == TokenType.wildcard || X2.type == TokenType.str) {
+                                throw new Exception("Infinity Error");
+                            }
+                            else {
                                 throw new Exception("Cannot Compile: Multiplication Type Error!");
                             }
                             break;
@@ -590,12 +644,17 @@ public class HLANG {
                                 String v1 = (String) X1.data;
                                 int v2 = (int) X2.data;
 
-                                ValStack.push(new Token<>(v1.substring(0, v2), TokenType.floating));
+                                ValStack.push(new Token<>(v1.substring(0, v2), TokenType.str));
                             } else if (X1.type == TokenType.integer && X2.type == TokenType.str) {
                                 int v1 = (int) X1.data;
                                 String v2 = (String) X2.data;
 
-                                ValStack.push(new Token<>(v2.substring(v1,v2.length()), TokenType.floating));
+                                ValStack.push(new Token<>(v2.substring(v1, v2.length()), TokenType.str));
+                            } else if (X1.type == TokenType.str && X2.type == TokenType.str) {
+                                String v1 = (String) X1.data;
+                                String v2 = (String) X2.data;
+
+                                ValStack.push(new Token<>(v1.replaceAll(v2, ""), TokenType.str));
                             } else {
                                 throw new Exception("Cannot Compile: Division Type Error!");
                             }
@@ -1043,6 +1102,9 @@ public class HLANG {
                 case TokenType.mapcar:
                     // Sometime Soon
                     break;
+                case TokenType.wildcard:
+                    ValStack.push(new Token<>("?", TokenType.wildcard));
+                    break;
                 default:
                     break;
             }
@@ -1165,5 +1227,21 @@ public class HLANG {
         }
 
         return res;
+    }
+
+    private static int countSubstringOccurrences(String text, String target) {
+        if (text == null || target == null || target.isEmpty()) {
+            return 0;
+        }
+
+        int count = 0;
+        int index = 0;
+
+        while ((index = text.indexOf(target, index)) != -1) {
+            count++;
+            index += target.length();
+        }
+
+        return count;
     }
 }
